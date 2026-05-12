@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSidebarResize } from '../Custom Hook/useSidebarResize';
 import { Link, useLocation } from 'react-router';
 
 interface MenuItem {
@@ -63,8 +62,7 @@ const NavLink = ({ to, icon, children, isActive }: {
   </Link>
 );
 
-export default function NavBar() {
-  const { width, startResizing } = useSidebarResize(240, 180, 600);
+export default function NavBar({ width, startResizing }: { width: number; startResizing: () => void }) {
   const location = useLocation();
 
   return (

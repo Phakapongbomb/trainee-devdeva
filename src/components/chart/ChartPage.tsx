@@ -1,0 +1,82 @@
+import { useRef } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import ReusableChart from './ReusableChart';
+
+export default function ChartPage({ title = 'Daily Graph' }: { title: string }) {
+    const chartContainerRef = useRef<HTMLDivElement>(null);
+
+    const handleExportPDF = async () => {
+        if (!chartContainerRef.current) return;
+
+        try {
+            const canvas = await html2canvas(chartContainerRef.current, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                onclone: (clonedDoc) => {
+                    // Hide the export button in the PDF
+                    const exportBtn = clonedDoc.getElementById('export-pdf-button');
+                    if (exportBtn) {
+                        exportBtn.style.display = 'none';
+                    }
+
+                    // Handle oklch colors for html2canvas compatibility
+                    // html2canvas doesn't support oklch yet, so we swap them for safe fallbacks
+                    const elements = clonedDoc.getElementsByTagName('*');
+                    for (let i = 0; i < elements.length; i++) {
+                        const el = elements[i] as HTMLElement;
+                        const style = window.getComputedStyle(el);
+                        
+                        if (style.color.includes('oklch')) el.style.color = '#64748b';
+                        if (style.backgroundColor.includes('oklch')) el.style.backgroundColor = '#ffffff';
+                        if (style.borderColor.includes('oklch')) el.style.borderColor = '#e2e8f0';
+                        if (style.fill.includes('oklch')) el.style.fill = '#64748b';
+                        if (style.stroke.includes('oklch')) el.style.stroke = '#64748b';
+                    }
+                }
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'px',
+                format: [canvas.width, canvas.height]
+            });
+
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.save(`${title.toLowerCase().replace(/\s+/g, '-')}.pdf`);
+        } catch (error) {
+            console.error('Error exporting PDF:', error);
+            alert('Could not export PDF. Please try again.');
+        }
+    };
+
+
+    return (
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
+            <div 
+                ref={chartContainerRef}
+                className="w-full max-w-5xl bg-white rounded-xl shadow-sm border border-slate-200 p-8"
+            >
+                <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-xl font-bold text-slate-500">{title}</h2>
+                    <button
+                        id="export-pdf-button"
+                        onClick={handleExportPDF}
+                        className="flex items-center space-x-2 text-purple-600 border border-purple-300 hover:bg-purple-50 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Export PDF</span>
+                    </button>
+                </div>
+
+                <div className="bg-white text-slate-800">
+                    <ReusableChart />
+                </div>
+            </div>
+        </div>
+    );
+}

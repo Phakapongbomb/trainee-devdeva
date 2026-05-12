@@ -25,22 +25,17 @@ export const useSidebarResize = (initialWidth: number, minWidth: number, maxWidt
         if (isResizing) {
             window.addEventListener('mousemove', resize);
             window.addEventListener('mouseup', stopResizing);
-            document.body.style.cursor = 'col-resize';
-            document.body.classList.add('no-select');
         } else {
             window.removeEventListener('mousemove', resize);
             window.removeEventListener('mouseup', stopResizing);
-            document.body.style.cursor = '';
-            document.body.classList.remove('no-select');
         }
 
         return () => {
             window.removeEventListener('mousemove', resize);
             window.removeEventListener('mouseup', stopResizing);
-            document.body.style.cursor = '';
-            document.body.classList.remove('no-select');
         };
     }, [isResizing, resize, stopResizing]);
 
     return { width, isResizing, startResizing };
 };
+

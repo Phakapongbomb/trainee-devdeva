@@ -4,7 +4,7 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import Layout from './layout'
 import Home from './components/home/Home';
-import ChartJS from './components/chart/Chartjs';
+import ChartPage from './components/chart/ChartPage';
 
 const router = createBrowserRouter([
   {
@@ -17,7 +17,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/chart',
-        element: <ChartJS />
+        element: <ChartPage title="Daily Graph" />
       },
     ]
   }
