@@ -33,34 +33,36 @@ const CHART_HEIGHT = 400;
 const ReusableChart: React.FC<ReusableChartProps> = ({ data }) => {
     const finalData = useMemo(() => (data && data.length > 0 ? data : generateSampleData()), [data]);
 
-    const createDataset = (
-        label: string, 
-        dataKey: keyof typeof finalData[0], 
-        color: string, 
-        colorType: ColorType,
-        yAxisID: string
-    ): ChartDataset<'line'> => ({
-        label,
-        data: finalData.map(d => d[dataKey] as number),
-        borderColor: color,
-        backgroundColor: (context) => getGradient(context.chart.ctx, colorType, CHART_HEIGHT),
-        yAxisID,
-        fill: true,
-        tension: 0.4,
-        pointRadius: 3,
-        pointHoverRadius: 6,
-        pointBackgroundColor: color,
-        borderWidth: 2.5,
-    });
+    const chartData: LineChartData = useMemo(() => {
+        const createDataset = (
+            label: string,
+            dataKey: keyof typeof finalData[0],
+            color: string,
+            colorType: ColorType,
+            yAxisID: string
+        ): ChartDataset<'line'> => ({
+            label,
+            data: finalData.map(d => d[dataKey] as number),
+            borderColor: color,
+            backgroundColor: (context) => getGradient(context.chart.ctx, colorType, CHART_HEIGHT),
+            yAxisID,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+            pointBackgroundColor: color,
+            borderWidth: 2.5,
+        });
 
-    const chartData: LineChartData = useMemo(() => ({
-        labels: finalData.map(d => d.time),
-        datasets: [
-            createDataset('สีเขียว', 'green', CHART_COLORS.GREEN, 'green', 'yGreen'),
-            createDataset('สีส้ม', 'orange', CHART_COLORS.ORANGE, 'orange', 'yOrange'),
-            createDataset('สีน้ำเงิน', 'blue', CHART_COLORS.BLUE, 'blue', 'yBlue'),
-        ]
-    }), [finalData]);
+        return {
+            labels: finalData.map(d => d.time),
+            datasets: [
+                createDataset('สีเขียว', 'green', CHART_COLORS.GREEN, 'green', 'yGreen'),
+                createDataset('สีส้ม', 'orange', CHART_COLORS.ORANGE, 'orange', 'yOrange'),
+                createDataset('สีน้ำเงิน', 'blue', CHART_COLORS.BLUE, 'blue', 'yBlue'),
+            ]
+        };
+    }, [finalData]);
 
     const options = useMemo(() => getChartOptions(), []);
 
