@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+@layer utilities {
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .resizer-handle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -3px;
+    bottom: 0;
+    left: -3px;
+    cursor: col-resize;
+  }
+}
