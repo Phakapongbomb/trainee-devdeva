@@ -67,7 +67,7 @@ export default function NavBar({ width, startResizing }: { width: number; startR
 
   return (
     <aside
-      className="bg-[#0f172a] text-slate-300 flex flex-col shrink-0 relative border-r border-white/5 h-screen overflow-hidden"
+      className="hidden md:flex bg-[#0f172a] text-slate-300 flex-col shrink-0 relative border-r border-white/5 h-screen overflow-hidden"
       style={{ width: `${width}px` }}
     >
       {/* Logo and App Name */}

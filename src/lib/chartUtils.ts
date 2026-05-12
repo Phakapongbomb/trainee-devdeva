@@ -1,15 +1,22 @@
 import type { ChartDataPoint, LineChartOptions } from '../types/chart';
 import { CHART_COLORS, CHART_GRADIENTS } from '../constants/colors';
 
+/**
+ * Example of data structure for ChartDataPoint[]:
+ * [
+ *   { time: '01:00', green: 75, orange: 20, blue: 5 },
+ *   { time: '02:00', green: 80, orange: -10, blue: 4 },
+ *   ...
+ * ]
+ */
 export const generateSampleData = (): ChartDataPoint[] => {
-    return Array.from({ length: 24 }).map((_, i) => ({
+    return Array.from({ length: 12 }).map((_, i) => ({
         time: `${String(i + 1).padStart(2, '0')}:00`,
         green: Math.floor(Math.random() * 30) + 60,   // Range: 60 - 90
         orange: Math.floor(Math.random() * 100) - 50, // Range: -50 - 50
         blue: Math.floor(Math.random() * 5) + 3,      // Range: 3 - 8
     }));
 };
-
 
 export const getChartOptions = (overrides: Partial<LineChartOptions> = {}): LineChartOptions => {
     const defaultOptions: LineChartOptions = {
@@ -163,12 +170,12 @@ const GRADIENT_MAP: Record<ColorType, { START: string; END: string }> = {
 export const getGradient = (ctx: CanvasRenderingContext2D, type: ColorType, height: number = 400) => {
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
     const colors = GRADIENT_MAP[type];
-    
+
     if (colors) {
         gradient.addColorStop(0, colors.START);
         gradient.addColorStop(1, colors.END);
     }
-    
+
     return gradient;
 };
 
