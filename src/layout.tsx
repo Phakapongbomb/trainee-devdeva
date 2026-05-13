@@ -22,10 +22,10 @@ export default function Layout() {
             </header>
 
             <NavBar width={width} startResizing={startResizing} />
-            <main className="p-4 sm:p-8 flex-1 overflow-y-auto">
+            <main className="flex-1 flex flex-col overflow-hidden relative">
                 <Outlet />
             </main>
         </div>
     )
 }
-
+

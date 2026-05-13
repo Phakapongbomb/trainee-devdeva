@@ -3,8 +3,9 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import Layout from './layout'
-import Home from './components/home/Home';
 import ChartPage from './components/chart/ChartPage';
+import DashboardPage from './components/dashboard/DashboardPage';
+import { TaskProvider } from './context/TaskContext';
 
 const router = createBrowserRouter([
   {
@@ -13,7 +14,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home />
+        element: <DashboardPage />
       },
       {
         path: '/chart',
@@ -25,6 +26,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <TaskProvider>
+      <RouterProvider router={router} />
+    </TaskProvider>
   </StrictMode>,
 )
