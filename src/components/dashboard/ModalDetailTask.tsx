@@ -9,7 +9,8 @@ import {
 } from 'lucide-react';
 import type { Task } from '../../types/task';
 import { priorityConfig } from '../../utils/taskStyles';
-import { useTaskContext } from '../../hooks/useTaskContext';
+import { useDispatch } from 'react-redux';
+import { updateTask, deleteTask } from '../../store/taskSlice';
 
 interface ModalDetailTaskProps {
     isOpen: boolean;
@@ -18,7 +19,7 @@ interface ModalDetailTaskProps {
 }
 
 const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose }) => {
-    const { deleteTask, updateTask } = useTaskContext();
+    const dispatch = useDispatch();
 
     if (!isOpen || !task) return null;
 
@@ -26,7 +27,7 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
 
     const handleDelete = () => {
         if (window.confirm('Are you sure you want to delete this task?')) {
-            deleteTask(task.id);
+            dispatch(deleteTask(task.id));
             onClose();
         }
     };
@@ -46,11 +47,11 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
             nextProgress = 0;
         }
 
-        updateTask({
+        dispatch(updateTask({
             ...task,
             status: nextStatus,
             progress: nextProgress
-        });
+        }));
         onClose();
     };
 

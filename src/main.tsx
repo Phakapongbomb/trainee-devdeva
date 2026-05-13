@@ -5,7 +5,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import Layout from './layout'
 import ChartPage from './components/chart/ChartPage';
 import DashboardPage from './components/dashboard/DashboardPage';
-import { TaskProvider } from './context/TaskContext';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 const router = createBrowserRouter([
   {
@@ -26,8 +27,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <TaskProvider>
+    <Provider store={store}>
       <RouterProvider router={router} />
-    </TaskProvider>
+    </Provider>
   </StrictMode>,
 )

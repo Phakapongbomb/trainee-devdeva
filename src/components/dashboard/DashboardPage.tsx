@@ -12,10 +12,13 @@ import Pagination from './Pagination';
 // --- Data & Types ---
 import type { Task } from '../../types/task';
 import { COLUMNS } from '../../constants/mockData';
-import { useTaskContext } from '../../hooks/useTaskContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { type RootState } from '../../store';
+import { addTask } from '../../store/taskSlice';
 
 const Dashboard = () => {
-    const { tasks, addTask } = useTaskContext();
+    const tasks = useSelector((state: RootState) => state.tasks.tasks);
+    const dispatch = useDispatch();
     const [searchQuery, setSearchQuery] = useState('');
     const [priorityFilter, setPriorityFilter] = useState('All Priorities');
     const [statusFilter, setStatusFilter] = useState('Status: All');
@@ -27,10 +30,10 @@ const Dashboard = () => {
 
     const filteredTasks = tasks.filter(task => {
         const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             task.project.toLowerCase().includes(searchQuery.toLowerCase());
-        
+            task.project.toLowerCase().includes(searchQuery.toLowerCase());
+
         const matchesPriority = priorityFilter === 'All Priorities' || task.priority === priorityFilter;
-        
+
         // Map statusFilter to actual task status values
         const statusMap: Record<string, string> = {
             'To Do': 'To Do',
@@ -85,11 +88,11 @@ const Dashboard = () => {
                 </main>
 
                 {/* Modals */}
-                <ModalAddTask 
+                <ModalAddTask
                     key={modal.type === 'add' ? `add-${modal.status}` : 'closed'}
-                    isOpen={modal.type === 'add'} 
-                    onClose={closeModal} 
-                    onAddTask={addTask}
+                    isOpen={modal.type === 'add'}
+                    onClose={closeModal}
+                    onAddTask={(task) => dispatch(addTask(task))}
                     initialStatus={modal.status}
                 />
                 <ModalDetailTask
