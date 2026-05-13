@@ -9,6 +9,7 @@ export interface Task {
     progress: number;
     avatars: string[];
     description?: string;
+    assignees: User[];
 }
 
 export interface Column {

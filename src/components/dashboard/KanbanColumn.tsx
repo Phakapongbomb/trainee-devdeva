@@ -1,4 +1,4 @@
-import { MoreHorizontal, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import type { Task, Column } from '../../types/task';
 import TaskCard from './TaskCard';
 
@@ -30,14 +30,11 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, tasks, onTaskClick,
                     <span className="font-bold text-sm tracking-wide uppercase">{column.title}</span>
                     <span className="ml-2 bg-white/50 px-2 py-0.5 rounded-md text-xs font-bold">{tasks.length}</span>
                 </div>
-                <button className="p-1 hover:bg-black/5 rounded-md transition-colors">
-                    <MoreHorizontal className="w-4 h-4" />
-                </button>
             </div>
 
             <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-1 pb-4 hide-scrollbar min-h-0">
                 {tasks.map(task => <TaskCard key={task.id} task={task} onClick={() => onTaskClick(task)} />)}
-                <button 
+                <button
                     onClick={() => onAddTask(column.status)}
                     className="w-full py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:text-slate-500 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm font-medium"
                 >

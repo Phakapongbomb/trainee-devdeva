@@ -70,3 +70,89 @@ li {
     }
   }
 }
+
+/* --- React Datepicker Overrides --- */
+.react-datepicker-popper {
+  z-index: 9999 !important;
+  margin-top: 0px !important;
+}
+
+.react-datepicker-wrapper {
+  width: 100% !important;
+  display: block !important;
+}
+
+.react-datepicker {
+  border: 1px solid #e2e8f0 !important;
+  font-family: inherit !important;
+  background-color: white !important;
+  display: inline-block !important;
+}
+
+.react-datepicker__header {
+  background-color: white !important;
+  border-bottom: none !important;
+  padding-top: 8px !important;
+}
+
+.react-datepicker__month {
+  margin: 0 !important;
+}
+
+.react-datepicker__week {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.react-datepicker__day-name {
+  color: #64748b !important;
+  font-weight: 600 !important;
+  width: 2.25rem !important;
+  margin: 0.125rem !important;
+  display: inline-block !important;
+}
+
+/* Default day style */
+.react-datepicker__day {
+  color: #334155 !important;
+  border: 1px solid transparent !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #f1f5f9 !important;
+  border-radius: 9999px !important;
+}
+
+/* Current day style - Subtle bold only, no blue */
+.react-datepicker__day--today {
+  color: #334155 !important;
+  font-weight: 800 !important;
+  background-color: transparent !important;
+}
+
+/* Selected day style - Solid orange background */
+.react-datepicker__day--selected,
+.react-datepicker__day--selected:hover {
+  background-color: #ec5b13 !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-radius: 9999px !important;
+}
+
+/* Remove keyboard selection background to avoid confusion */
+.react-datepicker__day--keyboard-selected {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+.react-datepicker__day--outside-month {
+  color: #cbd5e1 !important;
+}
+
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+.react-datepicker__month-container {
+  float: none !important;
+}

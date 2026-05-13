@@ -71,10 +71,11 @@ export const INITIAL_TASKS: Task[] = Array.from({ length: 30 }, (_, i) => {
         project: MOCK_PROJECTS[i % MOCK_PROJECTS.length],
         type: types[i % types.length],
         priority: priorities[i % priorities.length],
-        date: `Oct ${20 + (i % 10)}`,
+        date: `${20 + (i % 10)}/10/2026`,
         status,
         progress: status === 'Done' ? 100 : (status === 'In Progress' ? 45 : 0),
         avatars,
+        assignees: taskUsers,
         description: `<p>Detailed description for Task ${id}. This task focuses on improving the user experience through ${types[i % types.length].toLowerCase()} work.</p><ul><li>Step 1: Analysis</li><li>Step 2: Implementation</li></ul>`
     };
 });

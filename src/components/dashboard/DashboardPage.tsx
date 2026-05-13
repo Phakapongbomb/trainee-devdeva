@@ -19,27 +19,48 @@ import { addTask, updateTask } from '../../store/taskSlice';
 const Dashboard = () => {
     const tasks = useSelector((state: RootState) => state.tasks.tasks);
     const dispatch = useDispatch();
-    const [searchQuery, setSearchQuery] = useState('');
+
+    // Search states
+    const [globalSearchQuery, setGlobalSearchQuery] = useState('');
+    const [localSearchQuery, setLocalSearchQuery] = useState('');
+
+    // Filter states
     const [priorityFilter, setPriorityFilter] = useState('All Priorities');
     const [statusFilter, setStatusFilter] = useState('Status: All');
+
     const [modal, setModal] = useState<{
         type: 'add' | 'detail' | 'edit' | null;
         task: Task | null;
         status?: Task['status'];
     }>({ type: null, task: null });
+
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
-    const filteredTasks = tasks.filter(task => {
-        const query = searchQuery.toLowerCase();
-        const matchesSearch = 
-            task.title.toLowerCase().includes(query) ||
-            task.project.toLowerCase().includes(query) ||
-            task.priority.toLowerCase().includes(query) ||
-            task.status.toLowerCase().includes(query);
+    // Helper to reset page when filters change
+    const handleFilterChange = <T,>(setter: (val: T) => void) => (val: T) => {
+        setter(val);
+        setCurrentPage(1);
+    };
 
+    const filteredTasks = tasks.filter(task => {
+        // 1. Global Search (TopNav) - title, priority, status
+        const gQuery = globalSearchQuery.toLowerCase();
+        const matchesGlobal = !gQuery ||
+            task.title.toLowerCase().includes(gQuery) ||
+            task.priority.toLowerCase().includes(gQuery) ||
+            task.status.toLowerCase().includes(gQuery);
+
+        // 2. Local Search (Filters) - title, project
+        const lQuery = localSearchQuery.toLowerCase();
+        const matchesLocal = !lQuery ||
+            task.title.toLowerCase().includes(lQuery) ||
+            task.project.toLowerCase().includes(lQuery);
+
+        // 3. Priority Filter
         const matchesPriority = priorityFilter === 'All Priorities' || task.priority === priorityFilter;
 
+        // 4. Status Filter
         const statusMap: Record<string, string> = {
             'To Do': 'To Do',
             'In Progress': 'In Progress',
@@ -48,23 +69,15 @@ const Dashboard = () => {
         const actualStatus = statusMap[statusFilter] || null;
         const matchesStatus = statusFilter === 'Status: All' || task.status === actualStatus;
 
-        return matchesSearch && matchesPriority && matchesStatus;
+        return matchesGlobal && matchesLocal && matchesPriority && matchesStatus;
     });
 
-    // Reset to page 1 when search or filters change
-    const [lastQuery, setLastQuery] = useState(searchQuery);
-    if (searchQuery !== lastQuery) {
-        setLastQuery(searchQuery);
-        setCurrentPage(1);
-    }
-
-    // Total pages is the max pages across all columns (10 items per column per page)
     const totalPages = Math.max(
         ...COLUMNS.map(col => {
             const colTasksCount = filteredTasks.filter(t => t.status === col.status).length;
             return Math.ceil(colTasksCount / itemsPerPage);
         }),
-        1 // Default to at least 1 page
+        1
     );
 
     const handleTaskClick = (task: Task) => {
@@ -87,18 +100,21 @@ const Dashboard = () => {
 
     return (
         <div className="h-full bg-[#f8fafc] font-sans text-slate-800 antialiased flex flex-col">
-            <TopNav searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <TopNav
+                searchQuery={globalSearchQuery}
+                setSearchQuery={handleFilterChange(setGlobalSearchQuery)}
+            />
             <div className="flex-1 overflow-hidden flex flex-col">
                 <main className="container mx-auto flex-1 overflow-hidden p-4 sm:p-6 flex flex-col gap-6">
                     <Header onNewTask={() => handleAddTaskClick('To Do')} />
 
                     <Filters
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
+                        searchQuery={localSearchQuery}
+                        setSearchQuery={handleFilterChange(setLocalSearchQuery)}
                         priorityFilter={priorityFilter}
-                        setPriorityFilter={setPriorityFilter}
+                        setPriorityFilter={handleFilterChange(setPriorityFilter)}
                         statusFilter={statusFilter}
-                        setStatusFilter={setStatusFilter}
+                        setStatusFilter={handleFilterChange(setStatusFilter)}
                     />
 
                     <div className="flex-1 flex gap-6 overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory hide-scrollbar">
@@ -108,7 +124,7 @@ const Dashboard = () => {
                                 (currentPage - 1) * itemsPerPage,
                                 currentPage * itemsPerPage
                             );
-                            
+
                             return (
                                 <KanbanColumn
                                     key={column.id}
@@ -121,7 +137,7 @@ const Dashboard = () => {
                         })}
                     </div>
 
-                    <Pagination 
+                    <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
                         onPageChange={handlePageChange}
