@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import type { Task } from '../../types/task';
 import { priorityConfig } from '../../utils/taskStyles';
-import { useTaskContext } from '../../context/TaskContext';
+import { useTaskContext } from '../../hooks/useTaskContext';
 
 interface ModalDetailTaskProps {
     isOpen: boolean;
@@ -32,11 +32,24 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
     };
 
     const handleMarkComplete = () => {
-        const isDone = task.status === 'Done';
+        let nextStatus: Task['status'];
+        let nextProgress: number;
+
+        if (task.status === 'To Do') {
+            nextStatus = 'In Progress';
+            nextProgress = 45;
+        } else if (task.status === 'In Progress') {
+            nextStatus = 'Done';
+            nextProgress = 100;
+        } else {
+            nextStatus = 'To Do';
+            nextProgress = 0;
+        }
+
         updateTask({
             ...task,
-            status: isDone ? 'To Do' : 'Done',
-            progress: isDone ? 0 : 100
+            status: nextStatus,
+            progress: nextProgress
         });
         onClose();
     };
@@ -63,7 +76,7 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                         <h2 className="text-gray-900 text-lg font-bold leading-tight">Task Detail</h2>
                     </div>
                     <div className="flex gap-2">
-                        <button 
+                        <button
                             onClick={handleDelete}
                             className="flex items-center justify-center rounded-xl h-9 w-9 bg-red-50 hover:bg-red-100 text-red-500 transition-all active:scale-90"
                             title="Delete Task"
@@ -88,7 +101,7 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                         <h3 className={`text-gray-900 text-3xl font-extrabold leading-tight tracking-tight mb-4 ${task.status === 'Done' ? 'line-through decoration-gray-300 opacity-60' : ''}`}>
                             {task.title}
                         </h3>
-                        
+
                         {/* Tags */}
                         <div className="flex gap-2.5 flex-wrap">
                             <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold tracking-wide uppercase">
@@ -179,16 +192,15 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                 {/* Footer Actions */}
                 <footer className="border-t border-gray-100 p-6 bg-gray-50/50 flex justify-end gap-3 shrink-0">
                     <button
-                        onClick={onClose}
-                        className="px-6 py-2.5 rounded-xl text-gray-600 font-bold text-sm hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-200 transition-all active:scale-95"
-                    >
-                        Cancel
-                    </button>
-                    <button 
                         onClick={handleMarkComplete}
-                        className={`px-8 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all active:scale-95 ${task.status === 'Done' ? 'bg-slate-500 hover:bg-slate-600 shadow-slate-500/20' : 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20'}`}
+                        className={`px-8 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all active:scale-95 ${task.status === 'To Do' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20' :
+                                task.status === 'In Progress' ? 'bg-green-600 hover:bg-green-700 shadow-green-500/20' :
+                                    'bg-slate-500 hover:bg-slate-600 shadow-slate-500/20'
+                            }`}
                     >
-                        {task.status === 'Done' ? 'Mark as To Do' : 'Mark Complete'}
+                        {task.status === 'To Do' ? 'Start Progress' :
+                            task.status === 'In Progress' ? 'Mark as Done' :
+                                'Restart Task'}
                     </button>
                 </footer>
             </div>

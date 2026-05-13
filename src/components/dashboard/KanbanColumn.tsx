@@ -6,9 +6,10 @@ interface KanbanColumnProps {
     column: Column;
     tasks: Task[];
     onTaskClick: (task: Task) => void;
+    onAddTask: (status: Task['status']) => void;
 }
 
-const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, tasks, onTaskClick }) => {
+const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, tasks, onTaskClick, onAddTask }) => {
     const themes = {
         slate: "bg-slate-100 text-slate-600 border-slate-200",
         blue: "bg-blue-50 text-blue-700 border-blue-100",
@@ -36,7 +37,10 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, tasks, onTaskClick 
 
             <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-1 pb-4 hide-scrollbar min-h-0">
                 {tasks.map(task => <TaskCard key={task.id} task={task} onClick={() => onTaskClick(task)} />)}
-                <button className="w-full py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:text-slate-500 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm font-medium">
+                <button 
+                    onClick={() => onAddTask(column.status)}
+                    className="w-full py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:text-slate-500 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm font-medium"
+                >
                     <Plus className="w-4 h-4" /> Add Task
                 </button>
             </div>

@@ -1,15 +1,7 @@
-import React, { createContext, useContext, useState, type ReactNode } from 'react';
-import type { Task } from '../types/task';
+import React, { useState, type ReactNode } from 'react';
 import { INITIAL_TASKS } from '../constants/mockData';
-
-interface TaskContextType {
-    tasks: Task[];
-    addTask: (task: Task) => void;
-    updateTask: (task: Task) => void;
-    deleteTask: (taskId: string) => void;
-}
-
-const TaskContext = createContext<TaskContextType | undefined>(undefined);
+import type { Task } from '../types/task';
+import { TaskContext } from './taskContextInstance';
 
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
@@ -27,16 +19,10 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     return (
-        <TaskContext.Provider value={{ tasks, addTask, updateTask, deleteTask }}>
-            {children}
-        </TaskContext.Provider>
+        <React.Fragment>
+            <TaskContext.Provider value={{ tasks, addTask, updateTask, deleteTask }}>
+                {children}
+            </TaskContext.Provider>
+        </React.Fragment>
     );
-};
-
-export const useTaskContext = () => {
-    const context = useContext(TaskContext);
-    if (!context) {
-        throw new Error('useTaskContext must be used within a TaskProvider');
-    }
-    return context;
 };
