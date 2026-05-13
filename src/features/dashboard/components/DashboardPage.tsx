@@ -7,7 +7,7 @@ import {
     Filters,
     KanbanColumn,
     Pagination
-} from './';
+} from '../index';
 
 // --- Data & Types ---
 import { useSelector, useDispatch } from 'react-redux';
