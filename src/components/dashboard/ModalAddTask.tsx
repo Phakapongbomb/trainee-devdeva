@@ -38,10 +38,21 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
         description: task?.description || ''
     });
 
+    const [errors, setErrors] = useState<Partial<Record<keyof TaskFormData, string>>>({});
+
+    const validate = () => {
+        const newErrors: Partial<Record<keyof TaskFormData, string>> = {};
+        if (!formData.title.trim()) newErrors.title = 'Task name is required';
+        if (!formData.project) newErrors.project = 'Project is required';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     if (!isOpen) return null;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!validate()) return;
 
         // Map IDs back to full User objects and Avatar strings
         const selectedUsers = MOCK_USERS.filter(u => formData.assigneeIds.includes(u.id));
@@ -134,7 +145,11 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
                         required
                         placeholder="e.g., Design new landing page"
                         value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        onChange={(e) => {
+                            setFormData({ ...formData, title: e.target.value });
+                            if (errors.title) setErrors({ ...errors, title: '' });
+                        }}
+                        error={errors.title}
                     />
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -142,8 +157,13 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
                             label="Project Name"
                             options={projectOptions}
                             value={formData.project}
-                            onChange={(val) => setFormData({ ...formData, project: val })}
+                            onChange={(val) => {
+                                setFormData({ ...formData, project: val });
+                                if (errors.project) setErrors({ ...errors, project: '' });
+                            }}
                             placeholder="Select project"
+                            required
+                            error={errors.project}
                         />
                         <Select<string>
                             label="Assign To"

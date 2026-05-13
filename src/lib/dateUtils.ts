@@ -1,50 +1,48 @@
+import { format, parse, isValid, parseISO } from 'date-fns';
+
 /**
  * Safely parses a date string or Date object into a Date object.
- * Handles standard date strings and shorthand mock data like "Oct 20".
+ * Handles:
+ * 1. Date objects
+ * 2. ISO strings
+ * 3. 'dd/MM/yyyy' strings
+ * 4. Flexible date strings (e.g., 'Oct 20')
  */
-export const parseSafeDate = (dateStr: string | Date | null | undefined): Date | null => {
-    if (dateStr instanceof Date) return dateStr;
-    if (!dateStr) return null;
+export const parseSafeDate = (date: string | Date | null | undefined): Date | null => {
+    if (!date) return null;
     
-    // Try standard parsing (works for ISO and some locales)
-    const date = new Date(dateStr);
-    if (!isNaN(date.getTime())) return date;
-
-    // Try parsing dd/mm/yyyy format explicitly
-    if (typeof dateStr === 'string' && dateStr.includes('/')) {
-        const parts = dateStr.split('/');
-        if (parts.length === 3) {
-            const day = parseInt(parts[0], 10);
-            const month = parseInt(parts[1], 10) - 1; // 0-indexed months
-            const year = parseInt(parts[2], 10);
-            const d = new Date(year, month, day);
-            if (!isNaN(d.getTime())) return d;
-        }
+    // 1. If it's already a Date object, just check if it's valid
+    if (date instanceof Date) {
+        return isValid(date) ? date : null;
     }
 
-    // Fallback for mock data like "Oct 20"
-    try {
-        const currentYear = new Date().getFullYear();
-        const fallbackDate = new Date(`${dateStr}, ${currentYear}`);
-        if (!isNaN(fallbackDate.getTime())) return fallbackDate;
-    } catch {
-        return null;
-    }
-    
+    // 2. Try ISO format (e.g., 2024-05-13T00:00:00Z)
+    const isoDate = parseISO(date);
+    if (isValid(isoDate)) return isoDate;
+
+    // 3. Try 'dd/MM/yyyy' format (our standard)
+    const ddmmyyyyDate = parse(date, 'dd/MM/yyyy', new Date());
+    if (isValid(ddmmyyyyDate)) return ddmmyyyyDate;
+
+    // 4. Fallback for other formats (like 'Oct 20, 2024')
+    const nativeDate = new Date(date);
+    if (isValid(nativeDate)) return nativeDate;
+
     return null;
 };
 
 /**
- * Formats a date to "dd/mm/yyyy"
+ * Formats a date to "dd/MM/yyyy"
+ * Returns an empty string or placeholder if date is invalid
  */
-export const formatDateDisplay = (date: Date | string): string => {
-    if (!date) return 'Today';
-    const d = date instanceof Date ? date : new Date(date);
-    if (isNaN(d.getTime())) return 'Today';
+export const formatDateDisplay = (date: Date | string | null | undefined): string => {
+    if (!date) return '';
     
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
+    const parsedDate = typeof date === 'string' ? parseSafeDate(date) : date;
     
-    return `${day}/${month}/${year}`;
+    if (!parsedDate || !isValid(parsedDate)) {
+        return '';
+    }
+    
+    return format(parsedDate, 'dd/MM/yyyy');
 };

@@ -1,4 +1,7 @@
-import { Search, X, ChevronDown } from 'lucide-react';
+import React from 'react';
+import { X } from 'lucide-react';
+import Input from '../common/Input';
+import Select, { type SelectOption } from '../common/Select';
 
 interface FiltersProps {
     searchQuery: string;
@@ -9,29 +12,22 @@ interface FiltersProps {
     setStatusFilter: (val: string) => void;
 }
 
-const FilterSelect = ({ 
-    options, 
-    value, 
-    onChange 
-}: { 
-    options: string[], 
-    value: string, 
-    onChange: (val: string) => void 
-}) => (
-    <div className="relative min-w-[140px]">
-        <select 
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            className="w-full bg-white border border-slate-200 text-slate-600 text-sm rounded-lg py-2 pl-3 pr-8 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 appearance-none cursor-pointer"
-        >
-            {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-        </select>
-        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
-    </div>
-);
+const priorityOptions: SelectOption<string>[] = [
+    { id: 'all', label: 'All Priorities', value: 'All Priorities' },
+    { id: 'high', label: 'High', value: 'High' },
+    { id: 'medium', label: 'Medium', value: 'Medium' },
+    { id: 'low', label: 'Low', value: 'Low' },
+];
 
-const Filters: React.FC<FiltersProps> = ({ 
-    searchQuery, 
+const statusOptions: SelectOption<string>[] = [
+    { id: 'all', label: 'Status: All', value: 'Status: All' },
+    { id: 'todo', label: 'To Do', value: 'To Do' },
+    { id: 'inprogress', label: 'In Progress', value: 'In Progress' },
+    { id: 'done', label: 'Done', value: 'Done' },
+];
+
+const Filters: React.FC<FiltersProps> = ({
+    searchQuery,
     setSearchQuery,
     priorityFilter,
     setPriorityFilter,
@@ -45,31 +41,40 @@ const Filters: React.FC<FiltersProps> = ({
     };
 
     return (
-        <div className="flex flex-col lg:flex-row gap-3">
-            <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-                <input
+        <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search Input */}
+            <div className="flex-1 min-w-0">
+                <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                     placeholder="Filter tasks by name or project..."
-                    type="text"
+                    className="!bg-white !py-2.5 !rounded-lg border-slate-200"
                 />
             </div>
-            <div className="flex gap-3 overflow-x-auto pb-1 lg:pb-0 hide-scrollbar">
-                <FilterSelect 
-                    options={['All Priorities', 'High', 'Medium', 'Low']} 
-                    value={priorityFilter}
-                    onChange={setPriorityFilter}
-                />
-                <FilterSelect 
-                    options={['Status: All', 'To Do', 'In Progress', 'Done']} 
-                    value={statusFilter}
-                    onChange={setStatusFilter}
-                />
-                <button 
+
+            {/* Select Filters */}
+            <div className="flex items-center gap-3 pb-1 lg:pb-0 hide-scrollbar">
+                <div className="min-w-[160px]">
+                    <Select<string>
+                        options={priorityOptions}
+                        value={priorityFilter}
+                        onChange={setPriorityFilter}
+                        placeholder="Priority"
+                    />
+                </div>
+                <div className="min-w-[160px]">
+                    <Select<string>
+                        options={statusOptions}
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        placeholder="Status"
+                    />
+                </div>
+
+                {/* Clear Button */}
+                <button
                     onClick={handleClearAll}
-                    className="bg-white border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 px-3 py-2 rounded-lg shadow-sm transition-all flex items-center"
+                    className="bg-white border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 px-3 h-[46px] rounded-xl shadow-sm transition-all flex items-center shrink-0"
                     title="Clear filters"
                 >
                     <X className="w-4 h-4" />
