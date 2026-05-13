@@ -1,6 +1,6 @@
 import { Plus } from 'lucide-react';
-import type { Task, Column } from '../../types/task';
-import { TaskCard } from './';
+import type { Task, Column } from '../../../types/task';
+import TaskCard from './TaskCard';
 
 interface KanbanColumnProps {
     column: Column;

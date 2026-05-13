@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { Input, Select, type SelectOption } from '../common';
+import { Input, Select, type SelectOption } from '../../../components/common';
 
 interface FiltersProps {
     searchQuery: string;

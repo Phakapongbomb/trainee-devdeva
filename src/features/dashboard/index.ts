@@ -1,0 +1,9 @@
+export { default as DashboardPage } from './components/DashboardPage';
+export { default as Filters } from './components/Filters';
+export { default as Header } from './components/Header';
+export { default as KanbanColumn } from './components/KanbanColumn';
+export { default as ModalAddTask } from './components/ModalAddTask';
+export { default as ModalDetailTask } from './components/ModalDetailTask';
+export { default as Pagination } from './components/Pagination';
+export { default as TaskCard } from './components/TaskCard';
+export { default as TopNav } from './components/TopNav';

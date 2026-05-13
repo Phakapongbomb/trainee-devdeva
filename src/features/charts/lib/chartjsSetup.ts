@@ -10,7 +10,7 @@ import {
     Filler
 } from 'chart.js';
 import type { LineChartOptions } from '../types/chart';
-import { CHART_COLORS, CHART_GRADIENTS } from '../constants/colors';
+import { CHART_COLORS, CHART_GRADIENTS } from '../../../constants/colors';
 
 // Register Chart.js components
 ChartJS.register(

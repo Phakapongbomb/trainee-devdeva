@@ -1,5 +1,5 @@
 import { Bell, ChevronDown } from 'lucide-react';
-import { Input } from '../common';
+import { Input } from '../../../components/common';
 
 interface TopNavProps {
     searchQuery: string;

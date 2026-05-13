@@ -7,11 +7,11 @@ import {
     MoreHorizontal,
     Trash2
 } from 'lucide-react';
-import type { Task } from '../../types/task';
-import { PRIORITY_THEME } from '../../constants/theme';
+import type { Task } from '../../../types/task';
+import { PRIORITY_THEME } from '../../../constants/theme';
 import { useDispatch } from 'react-redux';
-import { updateTask, deleteTask } from '../../store/taskSlice';
-import { ConfirmModal } from '../common';
+import { updateTask, deleteTask } from '../../../store/taskSlice';
+import { ConfirmModal } from '../../../components/common';
 
 interface ModalDetailTaskProps {
     isOpen: boolean;

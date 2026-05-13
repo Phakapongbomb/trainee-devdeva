@@ -1,9 +1,0 @@
-export { default as DashboardPage } from './DashboardPage';
-export { default as Filters } from './Filters';
-export { default as Header } from './Header';
-export { default as KanbanColumn } from './KanbanColumn';
-export { default as ModalAddTask } from './ModalAddTask';
-export { default as ModalDetailTask } from './ModalDetailTask';
-export { default as Pagination } from './Pagination';
-export { default as TaskCard } from './TaskCard';
-export { default as TopNav } from './TopNav';

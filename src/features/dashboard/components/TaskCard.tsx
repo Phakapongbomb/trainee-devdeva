@@ -1,6 +1,6 @@
 import { Calendar, MoreHorizontal } from 'lucide-react';
-import type { Task } from '../../types/task';
-import { PRIORITY_THEME } from '../../constants/theme';
+import type { Task } from '../../../types/task';
+import { PRIORITY_THEME } from '../../../constants/theme';
 
 interface TaskCardProps {
     task: Task;

@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { type ChartDataset } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import type { ChartDataPoint, LineChartData } from '../../types/chart';
-import { getChartOptions, getGradient, type ColorType } from '../../lib/chartjsSetup';
-import { generateSampleData } from '../../utils/mockData';
-import { CHART_COLORS } from '../../constants/colors';
+import type { ChartDataPoint, LineChartData } from '../types/chart';
+import { getChartOptions, getGradient, type ColorType } from '../lib/chartjsSetup';
+import { generateSampleData } from '../../../utils/mockData';
+import { CHART_COLORS } from '../../../constants/colors';
 
 export interface ReusableChartProps {
     data?: ChartDataPoint[];

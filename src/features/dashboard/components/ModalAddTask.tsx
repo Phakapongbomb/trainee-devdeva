@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { Calendar, RichTextEditor, Input, Select, type SelectOption } from '../common';
-import { MOCK_USERS, MOCK_PROJECTS } from '../../constants/mockData';
-import type { Task } from '../../types/task';
+import { Calendar, RichTextEditor, Input, Select, type SelectOption } from '../../../components/common';
+import { MOCK_USERS, MOCK_PROJECTS } from '../../../constants/mockData';
+import type { Task } from '../../../types/task';
 import { useDispatch } from 'react-redux';
-import { addTask, updateTask } from '../../store/taskSlice';
-import { parseSafeDate, formatDateDisplay } from '../../utils/dateUtils';
-import { PRIORITY_THEME, STATUS_THEME } from '../../constants/theme';
+import { addTask, updateTask } from '../../../store/taskSlice';
+import { parseSafeDate, formatDateDisplay } from '../../../utils/dateUtils';
+import { PRIORITY_THEME, STATUS_THEME } from '../../../constants/theme';
 
 interface ModalAddTaskProps {
     isOpen: boolean;

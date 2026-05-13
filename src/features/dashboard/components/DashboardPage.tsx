@@ -11,16 +11,16 @@ import {
 
 // --- Data & Types ---
 import { useSelector, useDispatch } from 'react-redux';
-import type { Task } from '../../types/task';
-import { COLUMNS } from '../../constants/mockData';
-import { addTask, updateTask } from '../../store/taskSlice';
+import type { Task } from '../../../types/task';
+import { COLUMNS } from '../../../constants/mockData';
+import { addTask, updateTask } from '../../../store/taskSlice';
 import {
     setSearchQuery,
     setPriorityFilter,
     setStatusFilter,
     setCurrentPage
-} from '../../store/filterSlice';
-import { selectFilteredTasks, selectFilterState } from '../../store/selectors';
+} from '../../../store/filterSlice';
+import { selectFilteredTasks, selectFilterState } from '../../../store/selectors';
 
 const Dashboard = () => {
     const dispatch = useDispatch();

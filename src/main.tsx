@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import Layout from './layout'
-import ChartPage from './components/chart/ChartPage';
-import { DashboardPage } from './components/dashboard';
+import { ChartPage } from './features/charts';
+import { DashboardPage } from './features/dashboard';
 import { Provider } from 'react-redux';
 import { store } from './store';
 
