@@ -3,12 +3,9 @@ import {
     X, 
     ChevronDown, 
     Plus, 
-    Calendar, 
-    Bold, 
-    Italic, 
-    List, 
-    Paperclip 
+    Calendar
 } from 'lucide-react';
+import RichTextEditor from '../common/RichTextEditor';
 import type { Task } from '../../types/task';
 
 interface ModalAddTaskProps {
@@ -44,7 +41,8 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, onAddTask,
             date: formData.date || 'Today',
             status: formData.status,
             progress: 0,
-            avatars: ["https://i.pravatar.cc/150?u=new"]
+            avatars: ["https://i.pravatar.cc/150?u=new"],
+            description: formData.description
         };
 
         onAddTask(newTask);
@@ -215,22 +213,11 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, onAddTask,
                     {/* Description */}
                     <div className="space-y-1.5">
                         <label className="block text-sm font-semibold text-gray-700">Description</label>
-                        <div className="rounded-xl border border-gray-200 bg-gray-50/50 overflow-hidden focus-within:border-[#ec5b13] focus-within:ring-4 focus-within:ring-[#ec5b13]/10 transition-all">
-                            <textarea 
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                className="w-full bg-transparent px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none transition-shadow resize-y min-h-[120px]" 
-                                placeholder="Add more details about this task..." 
-                            ></textarea>
-                            {/* Formatting Toolbar */}
-                            <div className="flex items-center gap-1 p-2 bg-white border-t border-gray-100 text-gray-400">
-                                <button className="p-1.5 hover:bg-gray-100 hover:text-gray-600 rounded-lg transition-all" type="button"><Bold className="w-4 h-4" /></button>
-                                <button className="p-1.5 hover:bg-gray-100 hover:text-gray-600 rounded-lg transition-all" type="button"><Italic className="w-4 h-4" /></button>
-                                <button className="p-1.5 hover:bg-gray-100 hover:text-gray-600 rounded-lg transition-all" type="button"><List className="w-4 h-4" /></button>
-                                <div className="w-px h-4 bg-gray-200 mx-1"></div>
-                                <button className="p-1.5 hover:bg-gray-100 hover:text-gray-600 rounded-lg transition-all" type="button"><Paperclip className="w-4 h-4" /></button>
-                            </div>
-                        </div>
+                        <RichTextEditor 
+                            content={formData.description}
+                            onChange={(content) => setFormData({ ...formData, description: content })}
+                            placeholder="Add more details about this task..."
+                        />
                     </div>
                 </div>
 

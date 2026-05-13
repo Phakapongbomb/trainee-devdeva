@@ -10,7 +10,8 @@ export const INITIAL_TASKS: Task[] = [
         date: 'Oct 28',
         status: 'To Do',
         progress: 0,
-        avatars: ["https://i.pravatar.cc/150?u=1", "https://i.pravatar.cc/150?u=2", "https://i.pravatar.cc/150?u=3"]
+        avatars: ["https://i.pravatar.cc/150?u=1", "https://i.pravatar.cc/150?u=2", "https://i.pravatar.cc/150?u=3"],
+        description: "<p>Implement a full dark mode theme across the entire application.</p><ul><li>Define color tokens</li><li>Update UI components</li></ul>"
     },
     {
         id: '2',
@@ -21,7 +22,8 @@ export const INITIAL_TASKS: Task[] = [
         date: 'Oct 28',
         status: 'To Do',
         progress: 0,
-        avatars: ["https://i.pravatar.cc/150?u=4", "https://i.pravatar.cc/150?u=5"]
+        avatars: ["https://i.pravatar.cc/150?u=4", "https://i.pravatar.cc/150?u=5"],
+        description: "<p>Ensure all components follow accessibility standards.</p>"
     },
     {
         id: '3',
@@ -32,7 +34,8 @@ export const INITIAL_TASKS: Task[] = [
         date: 'Oct 28',
         status: 'In Progress',
         progress: 45,
-        avatars: ["https://i.pravatar.cc/150?u=7", "https://i.pravatar.cc/150?u=8"]
+        avatars: ["https://i.pravatar.cc/150?u=7", "https://i.pravatar.cc/150?u=8"],
+        description: "<p>Create a switch component to toggle between light and dark modes.</p>"
     },
     {
         id: '4',
@@ -43,7 +46,8 @@ export const INITIAL_TASKS: Task[] = [
         date: 'Oct 28',
         status: 'In Progress',
         progress: 45,
-        avatars: ["https://i.pravatar.cc/150?u=10", "https://i.pravatar.cc/150?u=11"]
+        avatars: ["https://i.pravatar.cc/150?u=10", "https://i.pravatar.cc/150?u=11"],
+        description: "<p>Integrate Litora design system with dark mode tokens.</p>"
     },
     {
         id: '5',
@@ -54,7 +58,8 @@ export const INITIAL_TASKS: Task[] = [
         date: 'Oct 28',
         status: 'Done',
         progress: 100,
-        avatars: ["https://i.pravatar.cc/150?u=13", "https://i.pravatar.cc/150?u=14"]
+        avatars: ["https://i.pravatar.cc/150?u=13", "https://i.pravatar.cc/150?u=14"],
+        description: "<p>Final review and determination of project scope.</p>"
     },
     {
         id: '6',
@@ -65,7 +70,8 @@ export const INITIAL_TASKS: Task[] = [
         date: 'Oct 28',
         status: 'Done',
         progress: 100,
-        avatars: ["https://i.pravatar.cc/150?u=15", "https://i.pravatar.cc/150?u=16"]
+        avatars: ["https://i.pravatar.cc/150?u=15", "https://i.pravatar.cc/150?u=16"],
+        description: "<p>Successful deployment of the redesigned web app.</p>"
     }
 ];
 

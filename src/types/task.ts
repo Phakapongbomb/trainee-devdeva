@@ -8,6 +8,7 @@ export interface Task {
     status: 'To Do' | 'In Progress' | 'Done';
     progress: number;
     avatars: string[];
+    description?: string;
 }
 
 export interface Column {

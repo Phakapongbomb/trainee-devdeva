@@ -178,23 +178,15 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                             <h4 className="text-gray-900 text-lg font-bold tracking-tight">Task Description</h4>
                             <button className="text-gray-400 hover:text-gray-600"><MoreHorizontal className="w-4 h-4" /></button>
                         </div>
-                        <div className="text-gray-600 text-sm leading-relaxed space-y-5 bg-gray-50/30 p-5 rounded-2xl border border-gray-50">
-                            <p>We need to implement a full dark mode theme across the entire application to improve accessibility and user comfort in low-light environments.</p>
-                            <div className="space-y-3">
-                                <p className="font-bold text-gray-800">Key Requirements:</p>
-                                <ul className="grid grid-cols-1 gap-2.5">
-                                    {[
-                                        'Define dark mode color tokens in Tailwind config.',
-                                        'Update Top Navigation and Sidebar components.',
-                                        'Ensure text contrast meets WCAG AA standards.'
-                                    ].map((item, i) => (
-                                        <li key={i} className="flex items-start gap-3">
-                                            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                                            <span>{item}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                        <div className="text-gray-600 text-sm leading-relaxed bg-gray-50/30 p-5 rounded-2xl border border-gray-50">
+                            <div
+                                className="prose prose-sm max-w-none 
+                                    prose-p:leading-relaxed prose-p:mb-4 
+                                    prose-ul:list-disc prose-ul:pl-4 prose-ul:mb-4
+                                    prose-ol:list-decimal prose-ol:pl-4 prose-ol:mb-4
+                                    prose-li:mb-1"
+                                dangerouslySetInnerHTML={{ __html: task.description || '<p className="text-gray-400 italic">No description provided.</p>' }}
+                            />
                         </div>
                     </div>
                 </div>
