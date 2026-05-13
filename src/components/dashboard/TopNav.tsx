@@ -1,6 +1,11 @@
 import { Search, Bell, ChevronDown } from 'lucide-react';
 
-const TopNav = () => (
+interface TopNavProps {
+    searchQuery: string;
+    setSearchQuery: (query: string) => void;
+}
+
+const TopNav: React.FC<TopNavProps> = ({ searchQuery, setSearchQuery }) => (
     <header className="bg-white border-b border-slate-200 py-3 sticky top-0 z-20 shrink-0">
         <div className="container mx-auto px-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -11,8 +16,10 @@ const TopNav = () => (
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
                     <input
                         className="pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-64 transition-all"
-                        placeholder="Search anything..."
+                        placeholder="Search name, priority, or status..."
                         type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
                 <button className="relative p-2 text-slate-500 hover:text-slate-700 transition-colors rounded-full hover:bg-slate-100">

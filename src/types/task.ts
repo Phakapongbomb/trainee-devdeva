@@ -17,3 +17,9 @@ export interface Column {
     status: Task['status'];
     theme: 'slate' | 'blue' | 'green';
 }
+export interface User {
+    id: string;
+    fullName: string;
+    nickname: string;
+    avatar: string;
+}

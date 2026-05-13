@@ -14,7 +14,7 @@ import type { Task } from '../../types/task';
 import { COLUMNS } from '../../constants/mockData';
 import { useSelector, useDispatch } from 'react-redux';
 import { type RootState } from '../../store';
-import { addTask } from '../../store/taskSlice';
+import { addTask, updateTask } from '../../store/taskSlice';
 
 const Dashboard = () => {
     const tasks = useSelector((state: RootState) => state.tasks.tasks);
@@ -23,7 +23,7 @@ const Dashboard = () => {
     const [priorityFilter, setPriorityFilter] = useState('All Priorities');
     const [statusFilter, setStatusFilter] = useState('Status: All');
     const [modal, setModal] = useState<{
-        type: 'add' | 'detail' | null;
+        type: 'add' | 'detail' | 'edit' | null;
         task: Task | null;
         status?: Task['status'];
     }>({ type: null, task: null });
@@ -31,8 +31,12 @@ const Dashboard = () => {
     const itemsPerPage = 10;
 
     const filteredTasks = tasks.filter(task => {
-        const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            task.project.toLowerCase().includes(searchQuery.toLowerCase());
+        const query = searchQuery.toLowerCase();
+        const matchesSearch = 
+            task.title.toLowerCase().includes(query) ||
+            task.project.toLowerCase().includes(query) ||
+            task.priority.toLowerCase().includes(query) ||
+            task.status.toLowerCase().includes(query);
 
         const matchesPriority = priorityFilter === 'All Priorities' || task.priority === priorityFilter;
 
@@ -46,6 +50,13 @@ const Dashboard = () => {
 
         return matchesSearch && matchesPriority && matchesStatus;
     });
+
+    // Reset to page 1 when search or filters change
+    const [lastQuery, setLastQuery] = useState(searchQuery);
+    if (searchQuery !== lastQuery) {
+        setLastQuery(searchQuery);
+        setCurrentPage(1);
+    }
 
     // Total pages is the max pages across all columns (10 items per column per page)
     const totalPages = Math.max(
@@ -64,6 +75,10 @@ const Dashboard = () => {
         setModal({ type: 'add', task: null, status });
     };
 
+    const handleEditTaskClick = (task: Task) => {
+        setModal({ type: 'edit', task });
+    };
+
     const closeModal = () => setModal({ type: null, task: null });
 
     const handlePageChange = (page: number) => {
@@ -72,7 +87,7 @@ const Dashboard = () => {
 
     return (
         <div className="h-full bg-[#f8fafc] font-sans text-slate-800 antialiased flex flex-col">
-            <TopNav />
+            <TopNav searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
             <div className="flex-1 overflow-hidden flex flex-col">
                 <main className="container mx-auto flex-1 overflow-hidden p-4 sm:p-6 flex flex-col gap-6">
                     <Header onNewTask={() => handleAddTaskClick('To Do')} />
@@ -115,16 +130,24 @@ const Dashboard = () => {
 
                 {/* Modals */}
                 <ModalAddTask
-                    key={modal.type === 'add' ? `add-${modal.status}` : 'closed'}
-                    isOpen={modal.type === 'add'}
+                    key={modal.type === 'edit' ? `edit-${modal.task?.id}` : (modal.type === 'add' ? `add-${modal.status}` : 'closed')}
+                    isOpen={modal.type === 'add' || modal.type === 'edit'}
                     onClose={closeModal}
-                    onAddTask={(task) => dispatch(addTask(task))}
+                    onAddTask={(task) => {
+                        if (modal.type === 'edit') {
+                            dispatch(updateTask(task));
+                        } else {
+                            dispatch(addTask(task));
+                        }
+                    }}
+                    task={modal.type === 'edit' ? modal.task : null}
                     initialStatus={modal.status}
                 />
                 <ModalDetailTask
                     isOpen={modal.type === 'detail'}
                     task={modal.task}
                     onClose={closeModal}
+                    onEdit={handleEditTaskClick}
                 />
             </div>
         </div>

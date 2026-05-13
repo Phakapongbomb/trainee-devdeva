@@ -17,9 +17,10 @@ interface ModalDetailTaskProps {
     isOpen: boolean;
     task: Task | null;
     onClose: () => void;
+    onEdit?: (task: Task) => void;
 }
 
-const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose }) => {
+const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose, onEdit }) => {
     const dispatch = useDispatch();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -93,7 +94,10 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                         >
                             <Trash2 className="w-4 h-4" />
                         </button>
-                        <button className="flex items-center justify-center rounded-xl h-9 w-9 bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-blue-600 transition-all active:scale-90">
+                        <button 
+                            onClick={() => onEdit?.(task)}
+                            className="flex items-center justify-center rounded-xl h-9 w-9 bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-blue-600 transition-all active:scale-90"
+                        >
                             <Edit2 className="w-4 h-4" />
                         </button>
                         <button
@@ -153,7 +157,6 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                                         </div>
                                     )}
                                 </div>
-                                <button className="text-blue-600 text-xs font-bold hover:underline">Add More</button>
                             </div>
                         </div>
                     </div>
