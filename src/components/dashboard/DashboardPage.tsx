@@ -27,6 +27,8 @@ const Dashboard = () => {
         task: Task | null;
         status?: Task['status'];
     }>({ type: null, task: null });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     const filteredTasks = tasks.filter(task => {
         const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -34,7 +36,6 @@ const Dashboard = () => {
 
         const matchesPriority = priorityFilter === 'All Priorities' || task.priority === priorityFilter;
 
-        // Map statusFilter to actual task status values
         const statusMap: Record<string, string> = {
             'To Do': 'To Do',
             'In Progress': 'In Progress',
@@ -46,6 +47,15 @@ const Dashboard = () => {
         return matchesSearch && matchesPriority && matchesStatus;
     });
 
+    // Total pages is the max pages across all columns (10 items per column per page)
+    const totalPages = Math.max(
+        ...COLUMNS.map(col => {
+            const colTasksCount = filteredTasks.filter(t => t.status === col.status).length;
+            return Math.ceil(colTasksCount / itemsPerPage);
+        }),
+        1 // Default to at least 1 page
+    );
+
     const handleTaskClick = (task: Task) => {
         setModal({ type: 'detail', task });
     };
@@ -55,6 +65,10 @@ const Dashboard = () => {
     };
 
     const closeModal = () => setModal({ type: null, task: null });
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
 
     return (
         <div className="h-full bg-[#f8fafc] font-sans text-slate-800 antialiased flex flex-col">
@@ -73,18 +87,30 @@ const Dashboard = () => {
                     />
 
                     <div className="flex-1 flex gap-6 overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory hide-scrollbar">
-                        {COLUMNS.map(column => (
-                            <KanbanColumn
-                                key={column.id}
-                                column={column}
-                                tasks={filteredTasks.filter(t => t.status === column.status)}
-                                onTaskClick={handleTaskClick}
-                                onAddTask={handleAddTaskClick}
-                            />
-                        ))}
+                        {COLUMNS.map(column => {
+                            const columnTasks = filteredTasks.filter(t => t.status === column.status);
+                            const paginatedColumnTasks = columnTasks.slice(
+                                (currentPage - 1) * itemsPerPage,
+                                currentPage * itemsPerPage
+                            );
+                            
+                            return (
+                                <KanbanColumn
+                                    key={column.id}
+                                    column={column}
+                                    tasks={paginatedColumnTasks}
+                                    onTaskClick={handleTaskClick}
+                                    onAddTask={handleAddTaskClick}
+                                />
+                            );
+                        })}
                     </div>
 
-                    <Pagination />
+                    <Pagination 
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
                 </main>
 
                 {/* Modals */}
