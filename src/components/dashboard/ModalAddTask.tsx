@@ -23,6 +23,7 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, onAddTask,
         title: '',
         project: '',
         priority: 'Medium' as Task['priority'],
+        type: 'Feature',
         status: initialStatus,
         date: '',
         description: ''
@@ -38,7 +39,7 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, onAddTask,
             id: Math.random().toString(36).substr(2, 9),
             title: formData.title,
             project: formData.project || 'General',
-            type: 'Feature',
+            type: formData.type,
             priority: formData.priority,
             date: formData.date || 'Today',
             status: formData.status,
@@ -144,8 +145,8 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, onAddTask,
                         </div>
                     </div>
 
-                    {/* Priority & Status Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {/* Priority, Status & Type Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div className="space-y-1.5">
                             <label className="block text-sm font-semibold text-gray-700">Priority</label>
                             <div className="relative">
@@ -172,6 +173,22 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, onAddTask,
                                     <option value="To Do">To Do</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Done">Done</option>
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
+                            </div>
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="block text-sm font-semibold text-gray-700">Task Type</label>
+                            <div className="relative">
+                                <select 
+                                    value={formData.type}
+                                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                    className="w-full appearance-none rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 pr-10 text-gray-900 focus:border-[#ec5b13] focus:ring-4 focus:ring-[#ec5b13]/10 focus:outline-none transition-all outline-none cursor-pointer"
+                                >
+                                    <option value="Feature">Feature</option>
+                                    <option value="Bug">Bug</option>
+                                    <option value="Design">Design</option>
+                                    <option value="Refactor">Refactor</option>
                                 </select>
                                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
                             </div>

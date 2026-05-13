@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     X,
     Edit2,
@@ -11,6 +11,7 @@ import type { Task } from '../../types/task';
 import { priorityConfig } from '../../utils/taskStyles';
 import { useDispatch } from 'react-redux';
 import { updateTask, deleteTask } from '../../store/taskSlice';
+import ConfirmModal from '../common/ConfirmModal';
 
 interface ModalDetailTaskProps {
     isOpen: boolean;
@@ -20,16 +21,24 @@ interface ModalDetailTaskProps {
 
 const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose }) => {
     const dispatch = useDispatch();
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     if (!isOpen || !task) return null;
 
     const config = priorityConfig[task.priority];
 
-    const handleDelete = () => {
-        if (window.confirm('Are you sure you want to delete this task?')) {
-            dispatch(deleteTask(task.id));
-            onClose();
-        }
+    const handleDeleteClick = () => {
+        setShowDeleteConfirm(true);
+    };
+
+    const confirmDelete = () => {
+        dispatch(deleteTask(task.id));
+        setShowDeleteConfirm(false);
+        onClose();
+    };
+
+    const cancelDelete = () => {
+        setShowDeleteConfirm(false);
     };
 
     const handleMarkComplete = () => {
@@ -78,7 +87,7 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                     </div>
                     <div className="flex gap-2">
                         <button
-                            onClick={handleDelete}
+                            onClick={handleDeleteClick}
                             className="flex items-center justify-center rounded-xl h-9 w-9 bg-red-50 hover:bg-red-100 text-red-500 transition-all active:scale-90"
                             title="Delete Task"
                         >
@@ -195,8 +204,8 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                     <button
                         onClick={handleMarkComplete}
                         className={`px-8 py-2.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all active:scale-95 ${task.status === 'To Do' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20' :
-                                task.status === 'In Progress' ? 'bg-green-600 hover:bg-green-700 shadow-green-500/20' :
-                                    'bg-slate-500 hover:bg-slate-600 shadow-slate-500/20'
+                            task.status === 'In Progress' ? 'bg-green-600 hover:bg-green-700 shadow-green-500/20' :
+                                'bg-slate-500 hover:bg-slate-600 shadow-slate-500/20'
                             }`}
                     >
                         {task.status === 'To Do' ? 'Start Progress' :
@@ -205,6 +214,16 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                     </button>
                 </footer>
             </div>
+
+            <ConfirmModal
+                isOpen={showDeleteConfirm}
+                onClose={cancelDelete}
+                onConfirm={confirmDelete}
+                title="Delete Task?"
+                description={`Are you sure you want to delete "${task.title}"?`}
+                confirmText="Delete"
+                type="danger"
+            />
         </div>
     );
 };
