@@ -11,7 +11,7 @@ export default function ChartPage({ title = 'Daily Graph' }: { title: string }) 
 
         try {
             const canvas = await html2canvas(chartContainerRef.current, {
-                scale: 2,
+                scale: 4, // Increased scale for better resolution
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 onclone: (clonedDoc) => {
@@ -22,12 +22,10 @@ export default function ChartPage({ title = 'Daily Graph' }: { title: string }) 
                     }
 
                     // Handle oklch colors for html2canvas compatibility
-                    // html2canvas doesn't support oklch yet, so we swap them for safe fallbacks
                     const elements = clonedDoc.getElementsByTagName('*');
                     for (let i = 0; i < elements.length; i++) {
                         const el = elements[i] as HTMLElement;
                         const style = window.getComputedStyle(el);
-                        
                         if (style.color.includes('oklch')) el.style.color = '#64748b';
                         if (style.backgroundColor.includes('oklch')) el.style.backgroundColor = '#ffffff';
                         if (style.borderColor.includes('oklch')) el.style.borderColor = '#e2e8f0';
@@ -37,14 +35,29 @@ export default function ChartPage({ title = 'Daily Graph' }: { title: string }) 
                 }
             });
 
-            const imgData = canvas.toDataURL('image/png');
+            const imgData = canvas.toDataURL('image/png', 1.0);
             const pdf = new jsPDF({
                 orientation: 'landscape',
-                unit: 'px',
-                format: [canvas.width, canvas.height]
+                unit: 'mm',
+                format: 'a4'
             });
 
-            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            // Calculate dimensions to fit A4 while preserving aspect ratio
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+            const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+
+            const finalWidth = imgWidth * ratio;
+            const finalHeight = imgHeight * ratio;
+
+            // Center the content
+            const x = (pageWidth - finalWidth) / 2;
+            const y = (pageHeight - finalHeight) / 2;
+
+            pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight, undefined, 'FAST');
             pdf.save(`${title.toLowerCase().replace(/\s+/g, '-')}.pdf`);
         } catch (error) {
             console.error('Error exporting PDF:', error);
@@ -55,7 +68,7 @@ export default function ChartPage({ title = 'Daily Graph' }: { title: string }) 
 
     return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-2 sm:p-4 font-sans">
-            <div 
+            <div
                 ref={chartContainerRef}
                 className="w-full max-w-5xl bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-8"
             >
