@@ -1,4 +1,5 @@
-import { Search, Bell, ChevronDown } from 'lucide-react';
+import { Bell, ChevronDown } from 'lucide-react';
+import { Input } from '../common';
 
 interface TopNavProps {
     searchQuery: string;
@@ -12,10 +13,10 @@ const TopNav: React.FC<TopNavProps> = ({ searchQuery, setSearchQuery }) => (
                 <h1 className="text-xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
             </div>
             <div className="flex items-center gap-4">
-                <div className="relative hidden sm:block">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-                    <input
-                        className="pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-64 transition-all"
+                <div className="hidden sm:block">
+                    <Input
+                        showSearchIcon={true}
+                        className="!bg-slate-50 !py-1.5 !rounded-lg border-slate-200 w-64"
                         placeholder="Search name, priority, or status..."
                         type="text"
                         value={searchQuery}

@@ -8,10 +8,10 @@ import {
     Trash2
 } from 'lucide-react';
 import type { Task } from '../../types/task';
-import { priorityConfig } from '../../utils/taskStyles';
+import { PRIORITY_THEME } from '../../constants/theme';
 import { useDispatch } from 'react-redux';
 import { updateTask, deleteTask } from '../../store/taskSlice';
-import ConfirmModal from '../common/ConfirmModal';
+import { ConfirmModal } from '../common';
 
 interface ModalDetailTaskProps {
     isOpen: boolean;
@@ -26,7 +26,7 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
 
     if (!isOpen || !task) return null;
 
-    const config = priorityConfig[task.priority];
+    const config = PRIORITY_THEME[task.priority];
 
     const handleDeleteClick = () => {
         setShowDeleteConfirm(true);

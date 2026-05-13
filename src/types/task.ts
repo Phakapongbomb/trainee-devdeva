@@ -1,3 +1,5 @@
+import type { User } from './user';
+
 export interface Task {
     id: string;
     title: string;
@@ -17,10 +19,4 @@ export interface Column {
     title: string;
     status: Task['status'];
     theme: 'slate' | 'blue' | 'green';
-}
-export interface User {
-    id: string;
-    fullName: string;
-    nickname: string;
-    avatar: string;
 }

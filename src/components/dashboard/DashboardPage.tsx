@@ -1,32 +1,33 @@
 import { useState } from 'react';
-import ModalAddTask from './ModalAddTask';
-import ModalDetailTask from './ModalDetailTask';
-
-// --- Modular Components ---
-import TopNav from './TopNav';
-import Header from './Header';
-import Filters from './Filters';
-import KanbanColumn from './KanbanColumn';
-import Pagination from './Pagination';
+import {
+    ModalAddTask,
+    ModalDetailTask,
+    TopNav,
+    Header,
+    Filters,
+    KanbanColumn,
+    Pagination
+} from './';
 
 // --- Data & Types ---
+import { useSelector, useDispatch } from 'react-redux';
 import type { Task } from '../../types/task';
 import { COLUMNS } from '../../constants/mockData';
-import { useSelector, useDispatch } from 'react-redux';
-import { type RootState } from '../../store';
 import { addTask, updateTask } from '../../store/taskSlice';
+import {
+    setSearchQuery,
+    setPriorityFilter,
+    setStatusFilter,
+    setCurrentPage
+} from '../../store/filterSlice';
+import { selectFilteredTasks, selectFilterState } from '../../store/selectors';
 
 const Dashboard = () => {
-    const tasks = useSelector((state: RootState) => state.tasks.tasks);
     const dispatch = useDispatch();
 
-    // Search states
-    const [globalSearchQuery, setGlobalSearchQuery] = useState('');
-    const [localSearchQuery, setLocalSearchQuery] = useState('');
-
-    // Filter states
-    const [priorityFilter, setPriorityFilter] = useState('All Priorities');
-    const [statusFilter, setStatusFilter] = useState('Status: All');
+    // Get tasks and filters from Redux
+    const filteredTasks = useSelector(selectFilteredTasks);
+    const { searchQuery, priorityFilter, statusFilter, currentPage } = useSelector(selectFilterState);
 
     const [modal, setModal] = useState<{
         type: 'add' | 'detail' | 'edit' | null;
@@ -34,43 +35,7 @@ const Dashboard = () => {
         status?: Task['status'];
     }>({ type: null, task: null });
 
-    const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-
-    // Helper to reset page when filters change
-    const handleFilterChange = <T,>(setter: (val: T) => void) => (val: T) => {
-        setter(val);
-        setCurrentPage(1);
-    };
-
-    const filteredTasks = tasks.filter(task => {
-        // 1. Global Search (TopNav) - title, priority, status
-        const gQuery = globalSearchQuery.toLowerCase();
-        const matchesGlobal = !gQuery ||
-            task.title.toLowerCase().includes(gQuery) ||
-            task.priority.toLowerCase().includes(gQuery) ||
-            task.status.toLowerCase().includes(gQuery);
-
-        // 2. Local Search (Filters) - title, project
-        const lQuery = localSearchQuery.toLowerCase();
-        const matchesLocal = !lQuery ||
-            task.title.toLowerCase().includes(lQuery) ||
-            task.project.toLowerCase().includes(lQuery);
-
-        // 3. Priority Filter
-        const matchesPriority = priorityFilter === 'All Priorities' || task.priority === priorityFilter;
-
-        // 4. Status Filter
-        const statusMap: Record<string, string> = {
-            'To Do': 'To Do',
-            'In Progress': 'In Progress',
-            'Done': 'Done'
-        };
-        const actualStatus = statusMap[statusFilter] || null;
-        const matchesStatus = statusFilter === 'Status: All' || task.status === actualStatus;
-
-        return matchesGlobal && matchesLocal && matchesPriority && matchesStatus;
-    });
 
     const totalPages = Math.max(
         ...COLUMNS.map(col => {
@@ -95,26 +60,26 @@ const Dashboard = () => {
     const closeModal = () => setModal({ type: null, task: null });
 
     const handlePageChange = (page: number) => {
-        setCurrentPage(page);
+        dispatch(setCurrentPage(page));
     };
 
     return (
         <div className="h-full bg-[#f8fafc] font-sans text-slate-800 antialiased flex flex-col">
             <TopNav
-                searchQuery={globalSearchQuery}
-                setSearchQuery={handleFilterChange(setGlobalSearchQuery)}
+                searchQuery={searchQuery}
+                setSearchQuery={(val) => dispatch(setSearchQuery(val))}
             />
             <div className="flex-1 overflow-hidden flex flex-col">
                 <main className="container mx-auto flex-1 overflow-hidden p-4 sm:p-6 flex flex-col gap-6">
                     <Header onNewTask={() => handleAddTaskClick('To Do')} />
 
                     <Filters
-                        searchQuery={localSearchQuery}
-                        setSearchQuery={handleFilterChange(setLocalSearchQuery)}
+                        searchQuery={searchQuery}
+                        setSearchQuery={(val) => dispatch(setSearchQuery(val))}
                         priorityFilter={priorityFilter}
-                        setPriorityFilter={handleFilterChange(setPriorityFilter)}
+                        setPriorityFilter={(val) => dispatch(setPriorityFilter(val))}
                         statusFilter={statusFilter}
-                        setStatusFilter={handleFilterChange(setStatusFilter)}
+                        setStatusFilter={(val) => dispatch(setStatusFilter(val))}
                     />
 
                     <div className="flex-1 flex gap-6 overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory hide-scrollbar">

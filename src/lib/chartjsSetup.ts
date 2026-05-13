@@ -1,23 +1,35 @@
-import type { ChartDataPoint, LineChartOptions } from '../types/chart';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+} from 'chart.js';
+import type { LineChartOptions } from '../types/chart';
 import { CHART_COLORS, CHART_GRADIENTS } from '../constants/colors';
 
-/**
- * Example of data structure for ChartDataPoint[]:
- * [
- *   { time: '01:00', green: 75, orange: 20, blue: 5 },
- *   { time: '02:00', green: 80, orange: -10, blue: 4 },
- *   ...
- * ]
- */
-export const generateSampleData = (): ChartDataPoint[] => {
-    return Array.from({ length: 12 }).map((_, i) => ({
-        time: `${String(i + 1).padStart(2, '0')}:00`,
-        green: Math.floor(Math.random() * 30) + 60,   // Range: 60 - 90
-        orange: Math.floor(Math.random() * 100) - 50, // Range: -50 - 50
-        blue: Math.floor(Math.random() * 5) + 3,      // Range: 3 - 8
-    }));
-};
+// Register Chart.js components
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+);
 
+/**
+ * Provides default Chart.js configuration options with optional overrides.
+ * 
+ * @param {Partial<LineChartOptions>} overrides - Custom options to override defaults.
+ * @returns {LineChartOptions} Merged chart options.
+ */
 export const getChartOptions = (overrides: Partial<LineChartOptions> = {}): LineChartOptions => {
     const defaultOptions: LineChartOptions = {
         responsive: true,
@@ -167,6 +179,14 @@ const GRADIENT_MAP: Record<ColorType, { START: string; END: string }> = {
     blue: CHART_GRADIENTS.BLUE,
 };
 
+/**
+ * Creates a linear gradient for the chart datasets.
+ * 
+ * @param {CanvasRenderingContext2D} ctx - Canvas context.
+ * @param {ColorType} type - Key representing the color theme.
+ * @param {number} height - Height of the gradient.
+ * @returns {CanvasGradient}
+ */
 export const getGradient = (ctx: CanvasRenderingContext2D, type: ColorType, height: number = 400) => {
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
     const colors = GRADIENT_MAP[type];
@@ -179,3 +199,4 @@ export const getGradient = (ctx: CanvasRenderingContext2D, type: ColorType, heig
     return gradient;
 };
 
+export { ChartJS };

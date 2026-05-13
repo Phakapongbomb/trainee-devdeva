@@ -4,7 +4,7 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import Layout from './layout'
 import ChartPage from './components/chart/ChartPage';
-import DashboardPage from './components/dashboard/DashboardPage';
+import { DashboardPage } from './components/dashboard';
 import { Provider } from 'react-redux';
 import { store } from './store';
 

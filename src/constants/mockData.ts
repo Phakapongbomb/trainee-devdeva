@@ -1,4 +1,5 @@
-import type { Task, Column, User } from '../types/task';
+import type { Task, Column } from '../types/task';
+import type { User } from '../types/user';
 
 export const MOCK_USERS: User[] = [
     { id: '1', fullName: 'Alexander Thompson', nickname: 'Alex', avatar: 'https://i.pravatar.cc/150?u=1' },
@@ -50,7 +51,7 @@ export const INITIAL_TASKS: Task[] = Array.from({ length: 30 }, (_, i) => {
     const id = (i + 1).toString();
     const priorities: Task['priority'][] = ['High', 'Medium', 'Low'];
     const types = ['Feature', 'Bug', 'Design', 'Refactor'];
-    
+
     let status: Task['status'] = 'To Do';
     if (i >= 15 && i < 23) status = 'In Progress';
     if (i >= 23) status = 'Done';
@@ -63,7 +64,7 @@ export const INITIAL_TASKS: Task[] = Array.from({ length: 30 }, (_, i) => {
     return {
         id,
         title: `Task ${id}: ${[
-            'Implement Dark Mode', 'Fix Login Bug', 'Refactor Auth Flow', 
+            'Implement Dark Mode', 'Fix Login Bug', 'Refactor Auth Flow',
             'Design New Landing', 'API Integration', 'Update Documentation',
             'Mobile Optimization', 'Performance Audit', 'Security Patch',
             'Add Unit Tests'

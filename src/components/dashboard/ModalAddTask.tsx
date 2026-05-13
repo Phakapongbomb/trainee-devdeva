@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import CalendarComponent from '../common/Calendar';
-import RichTextEditor from '../common/RichTextEditor';
-import Input from '../common/Input';
-import Select, { type SelectOption } from '../common/Select';
+import { Calendar, RichTextEditor, Input, Select, type SelectOption } from '../common';
 import { MOCK_USERS, MOCK_PROJECTS } from '../../constants/mockData';
 import type { Task } from '../../types/task';
 import { useDispatch } from 'react-redux';
 import { addTask, updateTask } from '../../store/taskSlice';
-import { parseSafeDate, formatDateDisplay } from '../../lib/dateUtils';
+import { parseSafeDate, formatDateDisplay } from '../../utils/dateUtils';
+import { PRIORITY_THEME, STATUS_THEME } from '../../constants/theme';
 
 interface ModalAddTaskProps {
     isOpen: boolean;
@@ -94,17 +92,17 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
         image: u.avatar
     }));
 
-    const priorityOptions: SelectOption<Task['priority']>[] = [
-        { id: 'Low', label: 'Low', value: 'Low' },
-        { id: 'Medium', label: 'Medium', value: 'Medium' },
-        { id: 'High', label: 'High', value: 'High' }
-    ];
+    const priorityOptions: SelectOption<Task['priority']>[] = Object.keys(PRIORITY_THEME).map(key => ({
+        id: key,
+        label: key,
+        value: key as Task['priority']
+    }));
 
-    const statusOptions: SelectOption<Task['status']>[] = [
-        { id: 'To Do', label: 'To Do', value: 'To Do' },
-        { id: 'In Progress', label: 'In Progress', value: 'In Progress' },
-        { id: 'Done', label: 'Done', value: 'Done' }
-    ];
+    const statusOptions: SelectOption<Task['status']>[] = Object.keys(STATUS_THEME).map(key => ({
+        id: key,
+        label: key,
+        value: key as Task['status']
+    }));
 
     const typeOptions: SelectOption<Task['type']>[] = [
         { id: 'Feature', label: 'Feature', value: 'Feature' },
@@ -192,7 +190,7 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <CalendarComponent
+                        <Calendar
                             label="Due Date"
                             selectedDate={formData.date instanceof Date ? formData.date : null}
                             onChange={(date) => setFormData({ ...formData, date: date || '' })}

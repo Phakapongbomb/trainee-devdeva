@@ -7,9 +7,5 @@ export interface ChartDataPoint {
     blue: number;
 }
 
-export interface ReusableChartProps {
-    data?: ChartDataPoint[];
-}
-
 export type LineChartData = ChartData<'line'>;
 export type LineChartOptions = ChartOptions<'line'>;

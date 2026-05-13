@@ -1,6 +1,6 @@
 import { Calendar, MoreHorizontal } from 'lucide-react';
 import type { Task } from '../../types/task';
-import { priorityConfig } from '../../utils/taskStyles';
+import { PRIORITY_THEME } from '../../constants/theme';
 
 interface TaskCardProps {
     task: Task;
@@ -8,7 +8,7 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
-    const config = priorityConfig[task.priority];
+    const config = PRIORITY_THEME[task.priority];
     const isDone = task.status === 'Done';
     const PriorityIcon = config.icon;
 

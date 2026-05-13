@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import NavBar from "./components/common/NavBar";
+import { NavBar } from "./components/common";
 import { useSidebarResize } from "./hooks/useSidebarResize";
 
 export default function Layout() {

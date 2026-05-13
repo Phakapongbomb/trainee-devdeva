@@ -1,22 +1,12 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronDown, Check, Search } from 'lucide-react';
+export { type SelectOption } from '../../types/common';
 
 /**
  * Represents an option within the Select component.
  * @template T The type of the value held by the option.
  */
-export interface SelectOption<T = string | number> {
-    /** Unique identifier for the option */
-    id: string | number;
-    /** Human-readable label displayed in the list */
-    label: string;
-    /** The actual value that will be returned on change */
-    value: T;
-    /** Optional URL for an image/avatar */
-    image?: string;
-    /** Optional secondary text displayed below the label */
-    subLabel?: string;
-}
+
 
 /**
  * Base properties shared by all Select modes.

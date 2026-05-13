@@ -1,36 +1,25 @@
 import React, { useMemo } from 'react';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler,
-    type ChartDataset
-} from 'chart.js';
+import { type ChartDataset } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import type { ReusableChartProps, LineChartData } from '../../types/chart';
-import { generateSampleData, getChartOptions, getGradient, type ColorType } from '../../lib/chartUtils';
+import type { ChartDataPoint, LineChartData } from '../../types/chart';
+import { getChartOptions, getGradient, type ColorType } from '../../lib/chartjsSetup';
+import { generateSampleData } from '../../utils/mockData';
 import { CHART_COLORS } from '../../constants/colors';
 
-// Register Chart.js components
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-);
+export interface ReusableChartProps {
+    data?: ChartDataPoint[];
+}
 
 const CHART_HEIGHT = 400;
 
+/**
+ * A reusable Line Chart component powered by Chart.js and react-chartjs-2.
+ * Automatically handles gradient generation and default configuration.
+ * 
+ * @param {ReusableChartProps} props - Component props containing the data array.
+ */
 const ReusableChart: React.FC<ReusableChartProps> = ({ data }) => {
+    // If no data is provided, use generated sample data
     const finalData = useMemo(() => (data && data.length > 0 ? data : generateSampleData()), [data]);
 
     const chartData: LineChartData = useMemo(() => {
@@ -64,6 +53,7 @@ const ReusableChart: React.FC<ReusableChartProps> = ({ data }) => {
         };
     }, [finalData]);
 
+    // Use centralized chart options
     const options = useMemo(() => getChartOptions(), []);
 
     return (

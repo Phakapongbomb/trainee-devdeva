@@ -2,7 +2,11 @@ import { AlertCircle, Clock, CheckCircle2 } from 'lucide-react';
 
 export type Priority = 'High' | 'Medium' | 'Low';
 
-export const priorityConfig = {
+/**
+ * Design tokens and configurations for task priorities.
+ * Includes background, text, border colors, icons, and labels.
+ */
+export const PRIORITY_THEME = {
     High: {
         bg: 'bg-red-50',
         text: 'text-red-700',
@@ -24,9 +28,13 @@ export const priorityConfig = {
         icon: CheckCircle2,
         label: 'Low Priority'
     }
-};
+} as const;
 
-export const statusConfig = {
+/**
+ * Design tokens and configurations for task statuses.
+ * Defines visual styles for various task states in the Kanban board.
+ */
+export const STATUS_THEME = {
     'To Do': {
         color: 'slate',
         dot: 'bg-slate-400',
@@ -48,4 +56,4 @@ export const statusConfig = {
         text: 'text-green-700',
         border: 'border-green-100'
     }
-};
+} as const;
