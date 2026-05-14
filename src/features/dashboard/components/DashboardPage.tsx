@@ -5,7 +5,7 @@ import {
     TopNav,
     Header,
     Filters,
-    KanbanColumn,
+    KanbanTaskLayout,
     Pagination,
     TableTaskLayout
 } from '../index';
@@ -99,25 +99,13 @@ const Dashboard = () => {
                     />
 
                     {view === 'kanban' ? (
-                        <div className="flex-1 flex gap-6 overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory hide-scrollbar">
-                            {COLUMNS.map(column => {
-                                const columnTasks = filteredTasks.filter(t => t.status === column.status);
-                                const paginatedColumnTasks = columnTasks.slice(
-                                    (currentPage - 1) * itemsPerPage,
-                                    currentPage * itemsPerPage
-                                );
-
-                                return (
-                                    <KanbanColumn
-                                        key={column.id}
-                                        column={column}
-                                        tasks={paginatedColumnTasks}
-                                        onTaskClick={handleTaskClick}
-                                        onAddTask={handleAddTaskClick}
-                                    />
-                                );
-                            })}
-                        </div>
+                        <KanbanTaskLayout
+                            tasks={filteredTasks}
+                            currentPage={currentPage}
+                            itemsPerPage={itemsPerPage}
+                            onTaskClick={handleTaskClick}
+                            onAddTask={handleAddTaskClick}
+                        />
                     ) : (
                         <TableTaskLayout
                             tasks={filteredTasks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)}

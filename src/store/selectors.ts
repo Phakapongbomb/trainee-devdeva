@@ -11,32 +11,35 @@ const selectFilters = (state: RootState) => state.filters;
  * Memoized selector that returns filtered tasks based on search query, 
  * priority, and status filters.
  * 
- * It re-computes only when either the tasks list or the filter state changes.
+ * Performance Optimization (Rule 5): 
+ * Pre-calculating lower-case versions of search strings OUTSIDE the filter loop
+ * to prevent O(N) redundant string operations.
  */
 export const selectFilteredTasks = createSelector(
     [selectTasks, selectFilters],
     (tasks, filters) => {
         const { navSearch, searchQuery, priorityFilter, statusFilter } = filters;
 
+        // 1. Pre-calculate lower-case search strings ONCE before filtering
+        const navLower = navSearch.toLowerCase();
+        const queryLower = searchQuery.toLowerCase();
+
         return tasks.filter(task => {
-            // 1. TopNav "Smart Search" Logic (Title OR Priority OR Status)
-            const navLower = navSearch.toLowerCase();
+            // 2. Use pre-calculated strings for the "Smart Search" (TopNav)
             const matchesNav = !navSearch || 
                 task.title.toLowerCase().includes(navLower) ||
                 task.priority.toLowerCase().includes(navLower) ||
                 task.status.toLowerCase().includes(navLower);
 
-            // 2. Specific Local Filter Search Logic
-            const queryLower = searchQuery.toLowerCase();
+            // 3. Use pre-calculated strings for the specific Local Search (Filters)
             const matchesLocalSearch = !searchQuery || 
                 task.title.toLowerCase().includes(queryLower) ||
                 task.project.toLowerCase().includes(queryLower);
 
-            // 3. Dropdown Filters Logic
+            // 4. Standard Dropdown Filters
             const matchesPriority = priorityFilter === 'All Priorities' || task.priority === priorityFilter;
             const matchesStatus = statusFilter === 'Status: All' || task.status === statusFilter;
 
-            // Combine all with AND logic
             return matchesNav && matchesLocalSearch && matchesPriority && matchesStatus;
         });
     }

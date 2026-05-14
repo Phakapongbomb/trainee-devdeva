@@ -45,20 +45,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
                 <div className="flex items-center gap-3 text-xs text-slate-400 font-medium">
                     <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {task.date}</span>
                 </div>
-                <div className="flex -space-x-2">
-                    {task.avatars.map((url, i) => (
-                        <img
-                            key={i}
-                            src={url}
-                            alt="Team"
-                            className="w-7 h-7 rounded-full border-2 border-white ring-1 ring-slate-100 object-cover"
-                        />
-                    ))}
-                </div>
             </div>
-
-            {task.progress > 0 && (
-                <div className="space-y-2">
+            <div className="flex items-end justify-between gap-4 pt-3 mt-auto">
+                <div className="flex-1 min-w-0 space-y-1.5">
                     <div className="flex justify-between text-[10px] font-bold uppercase text-slate-400">
                         <span>Progress</span>
                         <span>{task.progress}%</span>
@@ -70,7 +59,22 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
                         />
                     </div>
                 </div>
-            )}
+                <div className="flex -space-x-2 shrink-0 pb-0.5 w-[90px] justify-end">
+                    {task.avatars.slice(0, 3).map((url, i) => (
+                        <img
+                            key={i}
+                            src={url}
+                            alt="Team"
+                            className="w-7 h-7 rounded-full border-2 border-white ring-1 ring-slate-100 object-cover"
+                        />
+                    ))}
+                    {task.avatars.length > 3 && (
+                        <div className="w-7 h-7 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 ring-1 ring-slate-100">
+                            +{task.avatars.length - 3}
+                        </div>
+                    )}
+                </div>
+            </div>
         </article>
     );
 };
