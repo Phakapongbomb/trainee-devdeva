@@ -3,7 +3,7 @@ import type { Task } from '../types/task';
 import { getInitialTasks } from './hydration';
 import { resetApp } from './actions';
 
-interface TaskState {
+export interface TaskState {
     tasks: Task[];
 }
 

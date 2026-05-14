@@ -1,15 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit';
-import taskReducer from './taskSlice';
-import filterReducer from './filterSlice';
-import metadataReducer from './metadataSlice';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import taskReducer, { type TaskState } from './taskSlice';
+import filterReducer, { type FilterState } from './filterSlice';
+import metadataReducer, { type MetadataState } from './metadataSlice';
 import { loadState, saveState } from '../utils/storage';
 
 // Define the state shape explicitly to avoid 'any' and circular dependencies
 export interface AppState {
-    tasks: ReturnType<typeof taskReducer>;
-    filters: ReturnType<typeof filterReducer>;
-    metadata: ReturnType<typeof metadataReducer>;
+    tasks: TaskState;
+    filters: FilterState;
+    metadata: MetadataState;
 }
+
+const rootReducer = combineReducers({
+    tasks: taskReducer,
+    filters: filterReducer,
+    metadata: metadataReducer,
+});
 
 /**
  * 1. Load initial state from LocalStorage.
@@ -18,11 +24,7 @@ export interface AppState {
 const preloadedState = loadState('appData') as Partial<AppState> | undefined;
 
 export const store = configureStore({
-    reducer: {
-        tasks: taskReducer,
-        filters: filterReducer,
-        metadata: metadataReducer,
-    },
+    reducer: rootReducer,
     preloadedState,
 });
 

@@ -1,4 +1,4 @@
-import type { ChartDataPoint } from '../types/chart';
+import type { ChartDataPoint } from '../features/charts/types/chart';
 
 /**
  * Generates sample data for the line chart.
