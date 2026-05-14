@@ -59,40 +59,39 @@ const SettingPage: React.FC = () => {
     return (
         <div className="flex flex-col h-full bg-[#faf8ff] overflow-hidden">
             <TopNav
-                title="Settings"
                 placeholder="Search settings..."
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
             />
             <div className="flex-1 overflow-y-auto">
-                <FadeIn className="p-6 lg:p-8 container mx-auto w-full">
+                <FadeIn className="p-4 sm:p-6 lg:p-8 container mx-auto w-full">
                     {/* Page Title & Save Button */}
-                    <div className="mb-8 flex items-end justify-between">
+                    <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Settings</h1>
-                            <p className="text-gray-500 mt-1">Configure your workspace preferences and project parameters.</p>
+                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Settings</h1>
+                            <p className="text-sm sm:text-base text-gray-500 mt-1">Configure your workspace preferences and project parameters.</p>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-row items-center gap-3 w-full sm:w-auto">
                             <button
                                 onClick={handleResetAll}
-                                className="flex items-center gap-2 px-4 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl font-bold hover:bg-red-50 transition-all active:scale-95"
+                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl font-bold hover:bg-red-50 transition-all active:scale-95 text-sm sm:text-base"
                             >
                                 <RotateCcw className="w-4 h-4" />
-                                Reset Defaults
+                                <span className="whitespace-nowrap">Reset Defaults</span>
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-200"
+                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-200 text-sm sm:text-base"
                             >
                                 <SaveIcon className="w-4 h-4" />
-                                Save Changes
+                                <span className="whitespace-nowrap">Save Changes</span>
                             </button>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-12 gap-8">
                         {/* Main Settings Section */}
-                        <div className="col-span-12 lg:col-span-8 space-y-8">
+                        <div className="col-span-12 xl:col-span-8 space-y-8">
 
                             {/* Active Projects */}
                             <section className="space-y-4">
@@ -101,13 +100,13 @@ const SettingPage: React.FC = () => {
                                         <FolderIcon className="text-blue-600 w-5 h-5" />
                                         <h2 className="text-xl font-bold text-gray-900">Active Projects</h2>
                                     </div>
-                                    <button className="flex items-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm">
+                                    <button className="flex items-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap">
                                         <PlusIcon className="w-4 h-4" />
                                         Add Project
                                     </button>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                                     {projects.map((project, idx) => (
                                         <div key={`${project}-${idx}`} className="bg-white border border-gray-100 rounded-2xl p-5 hover:border-blue-200 transition-all group cursor-pointer shadow-sm hover:shadow-md">
                                             <div className="flex items-start justify-between mb-4">
@@ -146,12 +145,12 @@ const SettingPage: React.FC = () => {
                                         <AnalyticsIcon className="text-blue-600 w-5 h-5" />
                                         <h2 className="text-lg font-bold text-gray-900">Task Statuses</h2>
                                     </div>
-                                    <button className="flex items-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm">
+                                    <button className="flex items-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap">
                                         <PlusIcon className="w-4 h-4" />
                                         Add Status
                                     </button>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                                     {columns.map((col) => (
                                         <div key={col.id} className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100 group">
                                             <div className="flex items-center gap-3">
@@ -173,13 +172,19 @@ const SettingPage: React.FC = () => {
                         </div>
 
                         {/* Sidebar Settings Section */}
-                        <div className="col-span-12 lg:col-span-4 space-y-8">
+                        <div className="col-span-12 xl:col-span-4 space-y-8">
 
                             {/* Priorities Management */}
                             <section className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <PriorityIcon className="text-blue-600 w-5 h-5" />
-                                    <h2 className="text-lg font-bold text-gray-900">Priorities</h2>
+                                <div className="flex items-center justify-between gap-2 mb-6">
+                                    <div className='flex items-center gap-2'>
+                                        <PriorityIcon className="text-blue-600 w-5 h-5" />
+                                        <h2 className="text-lg font-bold text-gray-900">Priorities</h2>
+                                    </div>
+                                    <button className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap">
+                                        <PlusIcon className="w-4 h-4" />
+                                        Add Priority
+                                    </button>
                                 </div>
                                 <div className="space-y-5">
                                     {[
@@ -203,22 +208,18 @@ const SettingPage: React.FC = () => {
                                         </div>
                                     ))}
                                 </div>
-                                <button className="w-full mt-6 py-3 border border-dashed border-gray-200 text-gray-400 font-bold text-sm rounded-xl hover:border-blue-300 hover:text-blue-600 transition-all flex items-center justify-center gap-2">
-                                    <PlusIcon className="w-4 h-4" />
-                                    Add Custom Priority
-                                </button>
                             </section>
 
                             {/* Team Members Management */}
                             <section className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                                <div className="flex items-center justify-between mb-6">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                                     <div className="flex items-center gap-2">
                                         <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 font-bold text-xs">
                                             {reduxUsers.length}
                                         </div>
                                         <h2 className="text-lg font-bold text-gray-900">Team</h2>
                                     </div>
-                                    <button className="flex items-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm">
+                                    <button className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap">
                                         <PlusIcon className="w-4 h-4" />
                                         Add People
                                     </button>

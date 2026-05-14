@@ -62,12 +62,16 @@ const NavLink = ({ to, icon, children, isActive }: {
   </Link>
 );
 
-export default function NavBar({ width, startResizing }: { width: number; startResizing: () => void }) {
+export default function NavBar({ width, startResizing, onMobileClick }: {
+  width: number;
+  startResizing: () => void;
+  onMobileClick?: () => void;
+}) {
   const location = useLocation();
 
   return (
     <aside
-      className="hidden md:flex bg-[#0f172a] text-slate-300 flex-col shrink-0 relative border-r border-white/5 h-screen overflow-hidden"
+      className="flex bg-[#0f172a] text-slate-300 flex-col shrink-0 relative border-r border-white/5 h-screen overflow-hidden"
       style={{ width: `${width}px` }}
     >
       {/* Logo and App Name */}
@@ -85,14 +89,15 @@ export default function NavBar({ width, startResizing }: { width: number; startR
       {/* Navigation Links */}
       <nav className="flex-1 px-4 py-2 space-y-1.5 overflow-y-auto">
         {menuItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            icon={item.icon}
-            isActive={location.pathname === item.path}
-          >
-            {item.title}
-          </NavLink>
+          <div key={item.path} onClick={onMobileClick}>
+            <NavLink
+              to={item.path}
+              icon={item.icon}
+              isActive={location.pathname === item.path}
+            >
+              {item.title}
+            </NavLink>
+          </div>
         ))}
       </nav>
 
