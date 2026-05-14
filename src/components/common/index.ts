@@ -6,3 +6,6 @@ export { default as RichTextEditor } from './RichTextEditor';
 export { default as Select } from './Select';
 export * from './Select'; // Also export types/interfaces from Select
 export { default as FadeIn } from './FadeIn';
+export { default as TopNav } from './TopNav';
+export { default as BaseModal } from './BaseModal';
+

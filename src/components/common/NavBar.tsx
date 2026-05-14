@@ -32,7 +32,7 @@ const menuItems: MenuItem[] = [
   },
   {
     title: 'Settings',
-    path: '/settings',
+    path: '/setting',
     icon: (
       <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="18">
         <circle cx="12" cy="12" r="3"></circle>

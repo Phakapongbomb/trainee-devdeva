@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Calendar, RichTextEditor, Input, Select, type SelectOption } from '../../../components/common';
-import { MOCK_USERS, MOCK_PROJECTS } from '../../../constants/mockData';
 import type { Task } from '../../../types/task';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUsers, selectProjects } from '../../../store/selectors';
 import { addTask, updateTask } from '../../../store/taskSlice';
 import { parseSafeDate, formatDateDisplay } from '../../../utils/dateUtils';
 import { PRIORITY_THEME, STATUS_THEME } from '../../../constants/theme';
@@ -24,6 +24,8 @@ type TaskFormData = Omit<Task, 'id' | 'progress' | 'assignees' | 'avatars' | 'da
 
 const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, initialStatus = 'To Do' }) => {
     const dispatch = useDispatch();
+    const users = useSelector(selectUsers);
+    const projects = useSelector(selectProjects);
 
     const [formData, setFormData] = useState<TaskFormData>({
         title: task?.title || '',
@@ -53,7 +55,7 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
         if (!validate()) return;
 
         // Map IDs back to full User objects and Avatar strings
-        const selectedUsers = MOCK_USERS.filter(u => formData.assigneeIds.includes(u.id));
+        const selectedUsers = users.filter(u => formData.assigneeIds.includes(u.id));
         const selectedAvatars = selectedUsers.map(u => u.avatar);
 
         const newTask: Task = {
@@ -78,13 +80,13 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
         onClose();
     };
 
-    const projectOptions: SelectOption<string>[] = MOCK_PROJECTS.map(p => ({
+    const projectOptions: SelectOption<string>[] = projects.map(p => ({
         id: p,
         label: p,
         value: p
     }));
 
-    const assigneeOptions: SelectOption<string>[] = MOCK_USERS.map(u => ({
+    const assigneeOptions: SelectOption<string>[] = users.map(u => ({
         id: u.id,
         label: u.fullName,
         subLabel: `@${u.nickname}`,

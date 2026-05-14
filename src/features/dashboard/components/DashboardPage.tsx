@@ -2,19 +2,17 @@ import { useState } from 'react';
 import {
     ModalAddTask,
     ModalDetailTask,
-    TopNav,
     Header,
     Filters,
     KanbanTaskLayout,
     Pagination,
     TableTaskLayout
 } from '../index';
-import { FadeIn } from '../../../components/common';
+import { FadeIn, TopNav } from '../../../components/common';
 
 // --- Data & Types ---
 import { useSelector, useDispatch } from 'react-redux';
 import type { Task } from '../../../types/task';
-import { COLUMNS } from '../../../constants/mockData';
 import { addTask, updateTask } from '../../../store/taskSlice';
 import {
     setNavSearch,
@@ -23,13 +21,14 @@ import {
     setStatusFilter,
     setCurrentPage
 } from '../../../store/filterSlice';
-import { selectFilteredTasks, selectFilterState } from '../../../store/selectors';
+import { selectFilteredTasks, selectFilterState, selectColumns } from '../../../store/selectors';
 
 const Dashboard = () => {
     const dispatch = useDispatch();
 
     // Get tasks and filters from Redux
     const filteredTasks = useSelector(selectFilteredTasks);
+    const columns = useSelector(selectColumns);
     const { navSearch, searchQuery, priorityFilter, statusFilter, currentPage } = useSelector(selectFilterState);
 
     const [view, setView] = useState<'kanban' | 'table'>('kanban');
@@ -44,7 +43,7 @@ const Dashboard = () => {
 
     const totalPages = view === 'kanban'
         ? Math.max(
-            ...COLUMNS.map(col => {
+            ...columns.map(col => {
                 const colTasksCount = filteredTasks.filter(t => t.status === col.status).length;
                 return Math.ceil(colTasksCount / itemsPerPage);
             }),
@@ -78,6 +77,7 @@ const Dashboard = () => {
     return (
         <div className="h-full bg-[#f8fafc] font-sans text-slate-800 antialiased flex flex-col">
             <TopNav
+                title="Dashboard"
                 searchQuery={navSearch}
                 setSearchQuery={(val) => dispatch(setNavSearch(val))}
             />

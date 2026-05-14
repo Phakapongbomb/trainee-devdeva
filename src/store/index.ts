@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import taskReducer from './taskSlice';
 import filterReducer from './filterSlice';
+import metadataReducer from './metadataSlice';
 import { loadState, saveState } from '../utils/storage';
 
 // Define the state shape explicitly to avoid 'any' and circular dependencies
 export interface AppState {
     tasks: ReturnType<typeof taskReducer>;
     filters: ReturnType<typeof filterReducer>;
+    metadata: ReturnType<typeof metadataReducer>;
 }
 
 /**
@@ -19,6 +21,7 @@ export const store = configureStore({
     reducer: {
         tasks: taskReducer,
         filters: filterReducer,
+        metadata: metadataReducer,
     },
     preloadedState,
 });
@@ -33,13 +36,14 @@ const handleImmediateSave = () => {
     const state = store.getState();
     saveState('appData', {
         tasks: state.tasks,
+        metadata: state.metadata,
         // We no longer save filters to prevent UX "stuck" issues (Partial Persistence)
     });
 };
 
 store.subscribe(() => {
     if (saveTimeout) clearTimeout(saveTimeout);
-    
+
     // Reduce debounce to 500ms for more responsive saving
     saveTimeout = setTimeout(handleImmediateSave, 500);
 });

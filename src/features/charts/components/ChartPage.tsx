@@ -2,6 +2,10 @@ import { useRef } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import ReusableChart from './ReusableChart';
+import { TopNav } from '../../../components/common';
+import { useDispatch, useSelector } from 'react-redux';
+import { setNavSearch } from '../../../store/filterSlice';
+import { selectFilterState } from '../../../store/selectors';
 
 export default function ChartPage({ title = 'Daily Graph' }: { title: string }) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -66,8 +70,17 @@ export default function ChartPage({ title = 'Daily Graph' }: { title: string }) 
     };
 
 
+    const dispatch = useDispatch();
+    const { navSearch } = useSelector(selectFilterState);
+
     return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-2 sm:p-4 font-sans">
+        <div className="min-h-screen bg-[#faf8ff] flex flex-col font-sans">
+            <TopNav 
+                title="Statistics"
+                searchQuery={navSearch}
+                setSearchQuery={(val) => dispatch(setNavSearch(val))}
+            />
+            <div className="flex-1 flex items-center justify-center p-2 sm:p-4">
             <div
                 ref={chartContainerRef}
                 className="w-full max-w-5xl bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-8"
@@ -91,6 +104,7 @@ export default function ChartPage({ title = 'Daily Graph' }: { title: string }) 
                         <ReusableChart />
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );

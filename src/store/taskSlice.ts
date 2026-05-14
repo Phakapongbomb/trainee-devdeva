@@ -1,16 +1,17 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Task } from '../types/task';
-import { INITIAL_TASKS } from '../constants/mockData';
+import { getInitialTasks } from './hydration';
+import { resetApp } from './actions';
 
 interface TaskState {
     tasks: Task[];
 }
 
 const initialState: TaskState = {
-    tasks: INITIAL_TASKS,
+    tasks: getInitialTasks(),
 };
 
-export const taskSlice = createSlice({
+const taskSlice = createSlice({
     name: 'tasks',
     initialState,
     reducers: {
@@ -26,6 +27,9 @@ export const taskSlice = createSlice({
         deleteTask: (state, action: PayloadAction<string>) => {
             state.tasks = state.tasks.filter(t => t.id !== action.payload);
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(resetApp, () => initialState);
     },
 });
 

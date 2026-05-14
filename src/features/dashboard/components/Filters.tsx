@@ -2,6 +2,8 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { Input, Select, type SelectOption } from '../../../components/common';
 
+import { FILTER_ALL_PRIORITIES, FILTER_ALL_STATUSES } from '../../../constants/filters';
+
 interface FiltersProps {
     searchQuery: string;
     setSearchQuery: (val: string) => void;
@@ -12,14 +14,14 @@ interface FiltersProps {
 }
 
 const priorityOptions: SelectOption<string>[] = [
-    { id: 'all', label: 'All Priorities', value: 'All Priorities' },
+    { id: 'all', label: FILTER_ALL_PRIORITIES, value: FILTER_ALL_PRIORITIES },
     { id: 'high', label: 'High', value: 'High' },
     { id: 'medium', label: 'Medium', value: 'Medium' },
     { id: 'low', label: 'Low', value: 'Low' },
 ];
 
 const statusOptions: SelectOption<string>[] = [
-    { id: 'all', label: 'Status: All', value: 'Status: All' },
+    { id: 'all', label: FILTER_ALL_STATUSES, value: FILTER_ALL_STATUSES },
     { id: 'todo', label: 'To Do', value: 'To Do' },
     { id: 'inprogress', label: 'In Progress', value: 'In Progress' },
     { id: 'done', label: 'Done', value: 'Done' },
@@ -35,8 +37,8 @@ const Filters: React.FC<FiltersProps> = ({
 }) => {
     const handleClearAll = () => {
         setSearchQuery('');
-        setPriorityFilter('All Priorities');
-        setStatusFilter('Status: All');
+        setPriorityFilter(FILTER_ALL_PRIORITIES);
+        setStatusFilter(FILTER_ALL_STATUSES);
     };
 
     return (

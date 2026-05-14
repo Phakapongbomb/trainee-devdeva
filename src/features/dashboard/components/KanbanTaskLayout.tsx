@@ -1,6 +1,7 @@
 import React from 'react';
 import { KanbanColumn } from '../index';
-import { COLUMNS } from '../../../constants/mockData';
+import { useSelector } from 'react-redux';
+import { selectColumns } from '../../../store/selectors';
 import type { Task } from '../../../types/task';
 
 interface KanbanTaskLayoutProps {
@@ -22,9 +23,10 @@ const KanbanTaskLayout: React.FC<KanbanTaskLayoutProps> = ({
     onTaskClick,
     onAddTask
 }) => {
+    const columns = useSelector(selectColumns);
     return (
         <div className="flex-1 flex gap-6 overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory hide-scrollbar">
-            {COLUMNS.map(column => {
+            {columns.map(column => {
                 // Filter tasks for this specific column
                 const columnTasks = tasks.filter(t => t.status === column.status);
 
