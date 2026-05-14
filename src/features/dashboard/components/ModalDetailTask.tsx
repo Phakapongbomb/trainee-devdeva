@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectPriorities } from '../../../store/selectors';
 import { updateTask, deleteTask } from '../../../store/taskSlice';
 import { ConfirmModal } from '../../../components/common';
+import { resolveProjectName } from '../../../utils/legacyData';
 
 interface ModalDetailTaskProps {
     isOpen: boolean;
@@ -121,10 +122,9 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                             {task.title}
                         </h3>
 
-                        {/* Tags */}
                         <div className="flex gap-2.5 flex-wrap">
                             <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold tracking-wide uppercase">
-                                {typeof task.project === 'object' ? (task.project as any).name || (task.project as any).id : task.project}
+                                {resolveProjectName(task.project)}
                             </span>
                             <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase ${config.bg} ${config.text}`}>
                                 {task.priority} Priority

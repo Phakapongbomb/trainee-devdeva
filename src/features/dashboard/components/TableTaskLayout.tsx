@@ -2,6 +2,7 @@ import React from 'react';
 import { Calendar, List } from 'lucide-react';
 import type { Task } from '../../../types/task';
 import { PRIORITY_THEME, STATUS_THEME } from '../../../constants/theme';
+import { resolveProjectName } from '../../../utils/legacyData';
 
 interface TableTaskLayoutProps {
     tasks: Task[];
@@ -44,7 +45,7 @@ const TableTaskLayout: React.FC<TableTaskLayoutProps> = ({
                                     </span>
                                 </td>
                                 <td className="py-4 px-6 text-slate-500">
-                                    {typeof task.project === 'object' ? (task.project as any).name : task.project}
+                                    {resolveProjectName(task.project)}
                                 </td>
                                 <td className="py-4 px-6">
                                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${priorityConfig.bg} ${priorityConfig.text}`}>

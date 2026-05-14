@@ -3,6 +3,7 @@ import { Calendar, MoreHorizontal } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import type { Task } from '../../../types/task';
 import { PRIORITY_THEME } from '../../../constants/theme';
+import { resolveProjectName } from '../../../utils/legacyData';
 import { selectPriorities } from '../../../store/selectors';
 
 interface TaskCardProps {
@@ -35,7 +36,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
                         {task.title}
                     </h3>
                     <p className="text-xs font-medium text-slate-400 mt-0.5">
-                        {typeof task.project === 'object' ? (task.project as any).name : task.project}
+                        {resolveProjectName(task.project)}
                     </p>
                 </div>
                 <button className="text-slate-300 hover:text-slate-500 transition-colors">

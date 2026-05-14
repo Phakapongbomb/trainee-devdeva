@@ -15,7 +15,7 @@ export interface AppState {
  * 1. Load initial state from LocalStorage.
  * Hydrates the store with existing data on startup.
  */
-const preloadedState = loadState('appData') as any;
+const preloadedState = loadState('appData') as Partial<AppState>;
 
 const rootReducer = combineReducers({
     tasks: taskReducer,

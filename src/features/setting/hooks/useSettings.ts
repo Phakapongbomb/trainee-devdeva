@@ -7,6 +7,7 @@ import { renameStatus, renamePriority, removeStatusFromTasks, removePriorityFrom
 import { MOCK_PROJECTS, COLUMNS, MOCK_USERS, PRIORITIES } from '../../../constants/mockData';
 import type { Column, Priority } from '../../../types/task';
 import type { User } from '../../../types/user';
+import { resolveProjectName } from '../../../utils/legacyData';
 
 export const useSettings = () => {
     const dispatch = useDispatch();
@@ -17,7 +18,7 @@ export const useSettings = () => {
 
     // Normalize projects to handle legacy object formats from local storage
     const normalizedReduxProjects = useMemo(() => 
-        reduxProjects.map(p => typeof p === 'object' ? ((p as any).name || (p as any).id || String(p)) : p)
+        reduxProjects.map(p => typeof p === 'string' ? p : resolveProjectName(p))
     , [reduxProjects]);
 
     // Local state for editing before saving

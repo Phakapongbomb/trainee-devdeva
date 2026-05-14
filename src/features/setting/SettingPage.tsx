@@ -11,6 +11,8 @@ import {
     RotateCcw,
     SearchIcon
 } from 'lucide-react';
+
+import { resolveProjectName } from '../../utils/legacyData';
 import { TopNav, FadeIn, ConfirmModal } from '../../components/common';
 import { useSettings } from './hooks/useSettings';
 import { ProjectModal } from './components/ProjectModal';
@@ -58,7 +60,7 @@ const SettingPage: React.FC = () => {
 
     const filteredProjects = useMemo(() =>
         projects.filter(p => {
-            const name = typeof p === 'object' ? (p as any).name || (p as any).id || '' : String(p);
+            const name = resolveProjectName(p, '');
             return name.toLowerCase().includes(searchQuery.toLowerCase());
         }),
         [projects, searchQuery]);
@@ -138,7 +140,7 @@ const SettingPage: React.FC = () => {
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                                             {filteredProjects.map((project, idx) => {
-                                                const projectName = typeof project === 'object' ? (project as any).name || (project as any).id || 'Unknown Project' : String(project);
+                                                const projectName = resolveProjectName(project);
                                                 return (
                                                 <div key={`${projectName}-${idx}`} className="bg-white border border-gray-100 rounded-2xl p-5 hover:border-blue-200 transition-all group shadow-sm hover:shadow-md">
                                                     <div className="flex items-start justify-between mb-4">
