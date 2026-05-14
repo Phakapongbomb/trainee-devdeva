@@ -4,7 +4,7 @@ import type { User } from '../types/user';
 import { getInitialUsers, getInitialProjects, getInitialColumns, getInitialPriorities } from './hydration';
 import { resetApp } from './actions';
 
-export interface MetadataState {
+interface MetadataState {
     users: User[];
     projects: string[];
     columns: Column[];

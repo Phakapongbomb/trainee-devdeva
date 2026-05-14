@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { Input, Select } from '../../../components/common';
+import { Input, Select, type SelectOption } from '../../../components/common';
 import { useSelector } from 'react-redux';
 import { selectColumns, selectPriorities } from '../../../store/selectors';
 import { useMemo } from 'react';
@@ -55,7 +55,7 @@ const Filters: React.FC<FiltersProps> = ({
             <div className="flex-1 min-w-0">
                 <Input
                     value={searchQuery}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Filter tasks by name or project..."
                     className="!bg-white !py-2.5 !rounded-lg border-slate-200"
                 />
@@ -67,7 +67,7 @@ const Filters: React.FC<FiltersProps> = ({
                     <Select<string>
                         options={dynamicPriorityOptions}
                         value={priorityFilter}
-                        onChange={(val: string) => setPriorityFilter(val)}
+                        onChange={setPriorityFilter}
                         placeholder="Priority"
                     />
                 </div>
@@ -75,7 +75,7 @@ const Filters: React.FC<FiltersProps> = ({
                     <Select<string>
                         options={dynamicStatusOptions}
                         value={statusFilter}
-                        onChange={(val: string) => setStatusFilter(val)}
+                        onChange={setStatusFilter}
                         placeholder="Status"
                     />
                 </div>

@@ -28,8 +28,8 @@ const TableTaskLayout: React.FC<TableTaskLayoutProps> = ({
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-sm">
                     {tasks.map((task) => {
-                        const priorityConfig = PRIORITY_THEME[task.priority as keyof typeof PRIORITY_THEME];
-                        const statusConfig = STATUS_THEME[task.status as keyof typeof STATUS_THEME];
+                        const priorityConfig = PRIORITY_THEME[task.priority];
+                        const statusConfig = STATUS_THEME[task.status];
                         const isDone = task.status === 'Done';
 
                         return (
