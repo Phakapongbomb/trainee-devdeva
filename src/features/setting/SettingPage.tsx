@@ -57,7 +57,10 @@ const SettingPage: React.FC = () => {
     };
 
     const filteredProjects = useMemo(() =>
-        projects.filter(p => p.toLowerCase().includes(searchQuery.toLowerCase())),
+        projects.filter(p => {
+            const name = typeof p === 'object' ? (p as any).name || (p as any).id || '' : String(p);
+            return name.toLowerCase().includes(searchQuery.toLowerCase());
+        }),
         [projects, searchQuery]);
 
     const filteredStatuses = useMemo(() =>
@@ -134,8 +137,10 @@ const SettingPage: React.FC = () => {
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-                                            {filteredProjects.map((project, idx) => (
-                                                <div key={`${project}-${idx}`} className="bg-white border border-gray-100 rounded-2xl p-5 hover:border-blue-200 transition-all group shadow-sm hover:shadow-md">
+                                            {filteredProjects.map((project, idx) => {
+                                                const projectName = typeof project === 'object' ? (project as any).name || (project as any).id || 'Unknown Project' : String(project);
+                                                return (
+                                                <div key={`${projectName}-${idx}`} className="bg-white border border-gray-100 rounded-2xl p-5 hover:border-blue-200 transition-all group shadow-sm hover:shadow-md">
                                                     <div className="flex items-start justify-between mb-4">
                                                         <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
                                                             {idx % 2 === 0 ? <GlobeIcon className="text-blue-600 w-5 h-5" /> : <MobileIcon className="text-purple-600 w-5 h-5" />}
@@ -145,7 +150,7 @@ const SettingPage: React.FC = () => {
                                                         </span>
                                                     </div>
                                                     <div className="mb-4">
-                                                        <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{project}</h3>
+                                                        <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{projectName}</h3>
                                                     </div>
                                                     <div className="space-y-2">
                                                         <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
@@ -160,7 +165,7 @@ const SettingPage: React.FC = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            ))}
+                                            )})}
                                         </div>
                                     </section>
                                 )}

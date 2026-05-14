@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import taskReducer from './taskSlice';
 import filterReducer from './filterSlice';
 import metadataReducer from './metadataSlice';
@@ -15,14 +15,16 @@ export interface AppState {
  * 1. Load initial state from LocalStorage.
  * Hydrates the store with existing data on startup.
  */
-const preloadedState = loadState('appData') as Partial<AppState> | undefined;
+const preloadedState = loadState('appData') as any;
+
+const rootReducer = combineReducers({
+    tasks: taskReducer,
+    filters: filterReducer,
+    metadata: metadataReducer,
+});
 
 export const store = configureStore({
-    reducer: {
-        tasks: taskReducer,
-        filters: filterReducer,
-        metadata: metadataReducer,
-    },
+    reducer: rootReducer,
     preloadedState,
 });
 

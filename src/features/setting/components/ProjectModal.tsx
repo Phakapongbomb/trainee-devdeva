@@ -6,15 +6,17 @@ interface ProjectModalProps {
     isOpen: boolean;
     onClose: () => void;
     projects: string[];
-    onConfirm: (updatedProjects: string[]) => void;
+    onConfirm: (updatedProjects: string[], renames: {oldName: string, newName: string}[], deleted: string[]) => void;
 }
 
 export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, projects, onConfirm }) => {
-    const [draftProjects, setDraftProjects] = useState<string[]>(projects);
+    const [draftProjects, setDraftProjects] = useState<{id: string, value: string, originalValue?: string}[]>(
+        projects.map((p, i) => ({ id: `proj-${i}`, value: p, originalValue: p }))
+    );
     const [validationError, setValidationError] = useState<string | null>(null);
 
     const handleAddNewProject = () => {
-        setDraftProjects([...draftProjects, '']);
+        setDraftProjects([...draftProjects, { id: `new-${Date.now()}`, value: '' }]);
         setValidationError(null);
     };
 
@@ -24,7 +26,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, pro
     };
 
     const validateAndConfirm = () => {
-        const cleanedProjects = draftProjects.map(projectName => projectName.trim());
+        const cleanedProjects = draftProjects.map(p => p.value.trim());
         
         // Validation Logic
         if (cleanedProjects.some(name => name === "")) {
@@ -38,7 +40,16 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, pro
             return;
         }
 
-        onConfirm(cleanedProjects);
+        const renames: {oldName: string, newName: string}[] = [];
+        draftProjects.forEach(p => {
+            if (p.originalValue && p.originalValue !== p.value.trim()) {
+                renames.push({ oldName: p.originalValue, newName: p.value.trim() });
+            }
+        });
+
+        const deleted = projects.filter(original => !draftProjects.some(draft => draft.originalValue === original));
+
+        onConfirm(cleanedProjects, renames, deleted);
         onClose();
     };
 
@@ -56,15 +67,15 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, pro
                 </div>
 
                 <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
-                    {draftProjects.map((projectName, index) => (
-                        <div key={`project-${index}`} className="flex items-end gap-3 group animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    {draftProjects.map((project, index) => (
+                        <div key={project.id} className="flex items-end gap-3 group animate-in fade-in slide-in-from-bottom-2 duration-300">
                             <div className="flex-grow">
                                 <Input
                                     label={`Project #${index + 1}`}
-                                    value={projectName}
+                                    value={project.value}
                                     onChange={(e) => {
                                         const newDraft = [...draftProjects];
-                                        newDraft[index] = e.target.value;
+                                        newDraft[index] = { ...newDraft[index], value: e.target.value };
                                         setDraftProjects(newDraft);
                                         setValidationError(null);
                                     }}

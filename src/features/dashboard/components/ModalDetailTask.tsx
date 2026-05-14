@@ -124,7 +124,7 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                         {/* Tags */}
                         <div className="flex gap-2.5 flex-wrap">
                             <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold tracking-wide uppercase">
-                                {task.project}
+                                {typeof task.project === 'object' ? (task.project as any).name || (task.project as any).id : task.project}
                             </span>
                             <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase ${config.bg} ${config.text}`}>
                                 {task.priority} Priority

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectProjects, selectColumns, selectUsers, selectPriorities } from '../../../store/selectors';
 import { setProjects, setColumns, setPriorities, setUsers } from '../../../store/metadataSlice';
 import { resetApp } from '../../../store/actions';
-import { renameStatus, renamePriority, removeStatusFromTasks, removePriorityFromTasks } from '../../../store/taskSlice';
+import { renameStatus, renamePriority, removeStatusFromTasks, removePriorityFromTasks, renameProject, removeProjectFromTasks } from '../../../store/taskSlice';
 import { MOCK_PROJECTS, COLUMNS, MOCK_USERS, PRIORITIES } from '../../../constants/mockData';
 import type { Column, Priority } from '../../../types/task';
 import type { User } from '../../../types/user';
@@ -15,38 +15,47 @@ export const useSettings = () => {
     const reduxPriorities = useSelector(selectPriorities);
     const reduxUsers = useSelector(selectUsers);
 
+    // Normalize projects to handle legacy object formats from local storage
+    const normalizedReduxProjects = useMemo(() => 
+        reduxProjects.map(p => typeof p === 'object' ? ((p as any).name || (p as any).id || String(p)) : p)
+    , [reduxProjects]);
+
     // Local state for editing before saving
-    const [projects, setLocalProjects] = useState<string[]>(reduxProjects);
+    const [projects, setLocalProjects] = useState<string[]>(normalizedReduxProjects);
     const [columns, setLocalColumns] = useState<Column[]>(reduxColumns);
     const [priorities, setLocalPriorities] = useState<Priority[]>(reduxPriorities);
     const [users, setLocalUsers] = useState<User[]>(reduxUsers);
     const [searchQuery, setSearchQuery] = useState('');
+    
+    // Track project modifications that affect existing tasks
+    const [projectRenames, setProjectRenames] = useState<{oldName: string, newName: string}[]>([]);
+    const [projectDeletes, setProjectDeletes] = useState<string[]>([]);
 
     const [modal, setModal] = useState<{
         type: 'save' | 'reset' | null;
     }>({ type: null });
 
     const isChanged = useMemo(() => {
-        if (projects.length !== reduxProjects.length) return true;
+        if (projects.length !== normalizedReduxProjects.length) return true;
         if (priorities.length !== reduxPriorities.length) return true;
         if (users.length !== reduxUsers.length) return true;
-        return projects.some((p, i) => p !== reduxProjects[i]) ||
+        return projects.some((p, i) => p !== normalizedReduxProjects[i]) ||
             JSON.stringify(priorities) !== JSON.stringify(reduxPriorities) ||
             JSON.stringify(columns) !== JSON.stringify(reduxColumns) ||
             JSON.stringify(users) !== JSON.stringify(reduxUsers);
-    }, [projects, reduxProjects, columns, reduxColumns, priorities, reduxPriorities, users, reduxUsers]);
+    }, [projects, normalizedReduxProjects, columns, reduxColumns, priorities, reduxPriorities, users, reduxUsers]);
 
     const isNotDefault = useMemo(() => {
-        return JSON.stringify(reduxProjects) !== JSON.stringify(MOCK_PROJECTS) ||
+        return JSON.stringify(normalizedReduxProjects) !== JSON.stringify(MOCK_PROJECTS) ||
             JSON.stringify(reduxColumns) !== JSON.stringify(COLUMNS) ||
             JSON.stringify(reduxUsers) !== JSON.stringify(MOCK_USERS) ||
             JSON.stringify(reduxPriorities) !== JSON.stringify(PRIORITIES);
-    }, [reduxProjects, reduxColumns, reduxUsers, reduxPriorities]);
+    }, [normalizedReduxProjects, reduxColumns, reduxUsers, reduxPriorities]);
 
     const handleSave = () => {
-        // Sync Project Changes (Rename/Delete logic if needed in taskSlice)
-        // Note: Project renames are handled via renameProject if we track them.
-        // For simplicity, we focus on status and priority sync which are more critical.
+        // Sync Project Changes (Rename/Delete to taskSlice)
+        projectDeletes.forEach(p => dispatch(removeProjectFromTasks(p)));
+        projectRenames.forEach(r => dispatch(renameProject({ oldName: r.oldName, newName: r.newName })));
 
         // Sync Status Changes
         reduxColumns.forEach((oldCol) => {
@@ -87,13 +96,21 @@ export const useSettings = () => {
         setLocalColumns(COLUMNS);
         setLocalPriorities(PRIORITIES);
         setLocalUsers(MOCK_USERS);
+        setProjectRenames([]);
+        setProjectDeletes([]);
         setModal({ type: null });
+    };
+
+    const handleConfirmProjects = (updatedProjects: string[], renames: {oldName: string, newName: string}[], deleted: string[]) => {
+        setLocalProjects(updatedProjects);
+        setProjectRenames(prev => [...prev, ...renames]);
+        setProjectDeletes(prev => [...prev, ...deleted]);
     };
 
     return {
         reduxUsers,
         projects,
-        setLocalProjects,
+        setLocalProjects: handleConfirmProjects,
         columns,
         setLocalColumns,
         priorities,

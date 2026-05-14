@@ -34,7 +34,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
                     <h3 className={`font-bold text-slate-900 group-hover:text-blue-600 transition-colors ${isDone ? 'line-through decoration-slate-300' : ''}`}>
                         {task.title}
                     </h3>
-                    <p className="text-xs font-medium text-slate-400 mt-0.5">{task.project}</p>
+                    <p className="text-xs font-medium text-slate-400 mt-0.5">
+                        {typeof task.project === 'object' ? (task.project as any).name : task.project}
+                    </p>
                 </div>
                 <button className="text-slate-300 hover:text-slate-500 transition-colors">
                     <MoreHorizontal className="w-4 h-4" />

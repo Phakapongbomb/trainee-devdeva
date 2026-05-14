@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { Input, Select, type SelectOption } from '../../../components/common';
+import { Input, Select } from '../../../components/common';
 import { useSelector } from 'react-redux';
 import { selectColumns, selectPriorities } from '../../../store/selectors';
 import { useMemo } from 'react';

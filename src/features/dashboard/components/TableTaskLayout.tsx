@@ -28,8 +28,8 @@ const TableTaskLayout: React.FC<TableTaskLayoutProps> = ({
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-sm">
                     {tasks.map((task) => {
-                        const priorityConfig = PRIORITY_THEME[task.priority];
-                        const statusConfig = STATUS_THEME[task.status];
+                        const priorityConfig = PRIORITY_THEME[task.priority as keyof typeof PRIORITY_THEME] || PRIORITY_THEME.Medium;
+                        const statusConfig = STATUS_THEME[task.status as keyof typeof STATUS_THEME] || STATUS_THEME['To Do'];
                         const isDone = task.status === 'Done';
 
                         return (
@@ -43,7 +43,9 @@ const TableTaskLayout: React.FC<TableTaskLayoutProps> = ({
                                         {task.title}
                                     </span>
                                 </td>
-                                <td className="py-4 px-6 text-slate-500">{task.project}</td>
+                                <td className="py-4 px-6 text-slate-500">
+                                    {typeof task.project === 'object' ? (task.project as any).name : task.project}
+                                </td>
                                 <td className="py-4 px-6">
                                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${priorityConfig.bg} ${priorityConfig.text}`}>
                                         <priorityConfig.icon className="w-3 h-3" />
