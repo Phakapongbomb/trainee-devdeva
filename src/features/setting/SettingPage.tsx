@@ -84,6 +84,7 @@ const SettingPage: React.FC = () => {
         filteredStatuses.length > 0 ||
         filteredPriorities.length > 0 ||
         filteredUsers.length > 0;
+    const isSearchEmpty = searchQuery.trim() === '';
 
     return (
         <div className="flex flex-col h-full bg-[#faf8ff] overflow-hidden">
@@ -100,7 +101,7 @@ const SettingPage: React.FC = () => {
                         <p className="text-sm sm:text-base text-gray-500 mt-1">Configure your workspace preferences and project parameters.</p>
                     </div>
 
-                    {!hasResults ? (
+                    {(!hasResults && !isSearchEmpty) ? (
                         <div className="flex flex-col items-center justify-center py-20 animate-in fade-in zoom-in duration-500">
                             <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-4 ring-1 ring-gray-100">
                                 <SearchIcon className="w-10 h-10 text-gray-300" />
@@ -123,9 +124,8 @@ const SettingPage: React.FC = () => {
                             {/* Main Settings Section */}
                             <div className="col-span-12 xl:col-span-8 space-y-8">
                                 {/* Active Projects */}
-                                {filteredProjects.length > 0 && (
-                                    <section className="space-y-4">
-                                        <div className="flex items-center justify-between">
+                                    <section className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+                                        <div className="flex items-center justify-between mb-6">
                                             <div className="flex items-center gap-2">
                                                 <FolderIcon className="text-blue-600 w-5 h-5" />
                                                 <h2 className="text-xl font-bold text-gray-900">Active Projects</h2>
@@ -138,6 +138,11 @@ const SettingPage: React.FC = () => {
                                             </button>
                                         </div>
 
+                                        {filteredProjects.length === 0 ? (
+                                            <div className="py-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                                <p className="text-sm font-medium text-gray-500">No projects found. Click "Manage Projects" to add one.</p>
+                                            </div>
+                                        ) : (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                                             {filteredProjects.map((project, idx) => {
                                                 const projectName = resolveProjectName(project);
@@ -169,11 +174,10 @@ const SettingPage: React.FC = () => {
                                                 </div>
                                             )})}
                                         </div>
+                                        )}
                                     </section>
-                                )}
 
                                 {/* Statuses Configuration */}
-                                {filteredStatuses.length > 0 && (
                                     <section className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
                                         <div className="flex items-center justify-between mb-6">
                                             <div className="flex items-center gap-2">
@@ -187,6 +191,11 @@ const SettingPage: React.FC = () => {
                                                 Manage Statuses
                                             </button>
                                         </div>
+                                        {filteredStatuses.length === 0 ? (
+                                            <div className="py-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                                <p className="text-sm font-medium text-gray-500">No statuses found. Click "Manage Statuses" to add one.</p>
+                                            </div>
+                                        ) : (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                                             {filteredStatuses.map((col) => (
                                                 <div key={col.id} className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100 group">
@@ -205,14 +214,13 @@ const SettingPage: React.FC = () => {
                                                 </div>
                                             ))}
                                         </div>
+                                        )}
                                     </section>
-                                )}
                             </div>
 
                             {/* Sidebar Settings Section */}
                             <div className="col-span-12 xl:col-span-4 space-y-8">
                                 {/* Priorities Management */}
-                                {filteredPriorities.length > 0 && (
                                     <section className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
                                         <div className="flex items-center justify-between gap-2 mb-6">
                                             <div className='flex items-center gap-2'>
@@ -226,6 +234,11 @@ const SettingPage: React.FC = () => {
                                                 Manage Priorities
                                             </button>
                                         </div>
+                                        {filteredPriorities.length === 0 ? (
+                                            <div className="py-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                                <p className="text-sm font-medium text-gray-500">No priorities found. Click "Manage Priorities" to add one.</p>
+                                            </div>
+                                        ) : (
                                         <div className="space-y-5">
                                             {filteredPriorities.map((p, i) => (
                                                 <div key={i} className="space-y-1.5 animate-in fade-in slide-in-from-left duration-300" style={{ animationDelay: `${i * 100}ms` }}>
@@ -245,11 +258,10 @@ const SettingPage: React.FC = () => {
                                                 </div>
                                             ))}
                                         </div>
+                                        )}
                                     </section>
-                                )}
 
                                 {/* Team Members Management */}
-                                {filteredUsers.length > 0 && (
                                     <section className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                                             <div className="flex items-center gap-2">
@@ -266,6 +278,11 @@ const SettingPage: React.FC = () => {
                                                 Add People
                                             </button>
                                         </div>
+                                        {filteredUsers.length === 0 ? (
+                                            <div className="py-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                                <p className="text-sm font-medium text-gray-500">No team members found. Click "Add People".</p>
+                                            </div>
+                                        ) : (
                                         <div className="max-h-[300px] overflow-y-auto hide-scrollbar space-y-4 pr-1">
                                             {filteredUsers.map((user, idx) => (
                                                 <div key={`${user.id}-${idx}`} className="flex items-center justify-between group">
@@ -285,8 +302,8 @@ const SettingPage: React.FC = () => {
                                                 </div>
                                             ))}
                                         </div>
+                                        )}
                                     </section>
-                                )}
                             </div>
                         </div>
                     )}
