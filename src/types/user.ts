@@ -3,4 +3,5 @@ export interface User {
     fullName: string;
     nickname: string;
     avatar: string;
+    role?: string;
 }

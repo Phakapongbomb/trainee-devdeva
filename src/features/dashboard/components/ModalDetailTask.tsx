@@ -99,7 +99,7 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                         >
                             <Trash2 className="w-4 h-4" />
                         </button>
-                        <button 
+                        <button
                             onClick={() => onEdit?.(task)}
                             className="flex items-center justify-center rounded-xl h-9 w-9 bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-blue-600 transition-all active:scale-90"
                         >
@@ -153,7 +153,7 @@ const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose
                                             key={i}
                                             src={url}
                                             alt="Assignee"
-                                            className="h-9 w-9 rounded-full border-2 border-white ring-1 ring-gray-100 object-cover"
+                                            className="bg-white h-9 w-9 rounded-full border-2 border-white ring-1 ring-gray-100 object-cover"
                                         />
                                     ))}
                                     {task.avatars.length > 3 && (

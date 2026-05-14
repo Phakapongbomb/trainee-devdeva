@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectProjects, selectColumns, selectUsers, selectPriorities } from '../../../store/selectors';
-import { setProjects, setColumns, setPriorities } from '../../../store/metadataSlice';
+import { setProjects, setColumns, setPriorities, setUsers } from '../../../store/metadataSlice';
 import { resetApp } from '../../../store/actions';
-import { renameProject, renameStatus, renamePriority, removeStatusFromTasks, removePriorityFromTasks } from '../../../store/taskSlice';
+import { renameStatus, renamePriority, removeStatusFromTasks, removePriorityFromTasks } from '../../../store/taskSlice';
 import { MOCK_PROJECTS, COLUMNS, MOCK_USERS, PRIORITIES } from '../../../constants/mockData';
 import type { Column, Priority } from '../../../types/task';
+import type { User } from '../../../types/user';
 
 export const useSettings = () => {
     const dispatch = useDispatch();
@@ -18,8 +19,9 @@ export const useSettings = () => {
     const [projects, setLocalProjects] = useState<string[]>(reduxProjects);
     const [columns, setLocalColumns] = useState<Column[]>(reduxColumns);
     const [priorities, setLocalPriorities] = useState<Priority[]>(reduxPriorities);
+    const [users, setLocalUsers] = useState<User[]>(reduxUsers);
     const [searchQuery, setSearchQuery] = useState('');
-    
+
     const [modal, setModal] = useState<{
         type: 'save' | 'reset' | null;
     }>({ type: null });
@@ -27,10 +29,12 @@ export const useSettings = () => {
     const isChanged = useMemo(() => {
         if (projects.length !== reduxProjects.length) return true;
         if (priorities.length !== reduxPriorities.length) return true;
+        if (users.length !== reduxUsers.length) return true;
         return projects.some((p, i) => p !== reduxProjects[i]) ||
             JSON.stringify(priorities) !== JSON.stringify(reduxPriorities) ||
-            JSON.stringify(columns) !== JSON.stringify(reduxColumns);
-    }, [projects, reduxProjects, columns, reduxColumns, priorities, reduxPriorities]);
+            JSON.stringify(columns) !== JSON.stringify(reduxColumns) ||
+            JSON.stringify(users) !== JSON.stringify(reduxUsers);
+    }, [projects, reduxProjects, columns, reduxColumns, priorities, reduxPriorities, users, reduxUsers]);
 
     const isNotDefault = useMemo(() => {
         return JSON.stringify(reduxProjects) !== JSON.stringify(MOCK_PROJECTS) ||
@@ -73,7 +77,8 @@ export const useSettings = () => {
         dispatch(setProjects(projects));
         dispatch(setColumns(columns));
         dispatch(setPriorities(priorities));
-        setModal({ type: 'save' });
+        dispatch(setUsers(users));
+        setModal({ type: null });
     };
 
     const confirmReset = () => {
@@ -81,6 +86,7 @@ export const useSettings = () => {
         setLocalProjects(MOCK_PROJECTS);
         setLocalColumns(COLUMNS);
         setLocalPriorities(PRIORITIES);
+        setLocalUsers(MOCK_USERS);
         setModal({ type: null });
     };
 
@@ -92,6 +98,8 @@ export const useSettings = () => {
         setLocalColumns,
         priorities,
         setLocalPriorities,
+        users,
+        setLocalUsers,
         searchQuery,
         setSearchQuery,
         modal,
@@ -99,6 +107,12 @@ export const useSettings = () => {
         isChanged,
         isNotDefault,
         handleSave,
-        confirmReset
+        confirmReset,
+        handleAddUser: (newUser: User) => {
+            setLocalUsers([...users, newUser]);
+        },
+        handleUpdateUser: (updatedUser: User) => {
+            setLocalUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
+        }
     };
 };

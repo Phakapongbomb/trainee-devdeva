@@ -74,7 +74,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
                             key={i}
                             src={url}
                             alt="Team"
-                            className="w-7 h-7 rounded-full border-2 border-white ring-1 ring-slate-100 object-cover"
+                            className="bg-white w-7 h-7 rounded-full border-2 border-white ring-1 ring-slate-100 object-cover"
                         />
                     ))}
                     {task.avatars.length > 3 && (
