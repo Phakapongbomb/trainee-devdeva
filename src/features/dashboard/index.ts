@@ -7,3 +7,4 @@ export { default as ModalDetailTask } from './components/ModalDetailTask';
 export { default as Pagination } from './components/Pagination';
 export { default as TaskCard } from './components/TaskCard';
 export { default as TopNav } from './components/TopNav';
+export { default as TableTaskLayout } from './components/TableTaskLayout';

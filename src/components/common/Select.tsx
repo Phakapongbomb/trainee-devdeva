@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronDown, Check, Search } from 'lucide-react';
-export { type SelectOption } from '../../types/common';
+import FadeIn from './FadeIn';
+import type { SelectOption } from '../../types/common';
+export type { SelectOption };
 
 /**
  * Represents an option within the Select component.
@@ -61,15 +63,15 @@ type SelectProps<T> = SingleSelectProps<T> | MultipleSelectProps<T>;
  */
 const HighlightText: React.FC<{ text: string; highlight: string }> = ({ text, highlight }) => {
     if (!highlight.trim()) return <span>{text}</span>;
-    
+
     const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     const parts = text.split(regex);
-    
+
     return (
         <span>
-            {parts.map((part, i) => 
+            {parts.map((part, i) =>
                 regex.test(part) ? (
-                    <mark key={i} className="bg-[#ec5b13]/20 text-[#ec5b13] px-0.5 rounded-sm font-bold border-b border-[#ec5b13]/30">
+                    <mark key={i} className="bg-blue-600/20 text-blue-600 px-0.5 rounded-sm font-bold border-b border-blue-600/30">
                         {part}
                     </mark>
                 ) : (
@@ -165,7 +167,7 @@ function Select<T = string | number>(props: SelectProps<T>) {
     const handleToggle = () => {
         const nextIsOpen = !isOpen;
         setIsOpen(nextIsOpen);
-        
+
         if (nextIsOpen) {
             setFocusedIndex(0);
             setSearchQuery('');
@@ -306,7 +308,7 @@ function Select<T = string | number>(props: SelectProps<T>) {
         >
             {label && (
                 <label className="block text-sm font-semibold text-gray-700">
-                    {label} {required && <span className="text-[#ec5b13]">*</span>}
+                    {label} {required && <span className="text-blue-600">*</span>}
                 </label>
             )}
 
@@ -317,23 +319,27 @@ function Select<T = string | number>(props: SelectProps<T>) {
                     aria-haspopup="listbox"
                     aria-expanded={isOpen}
                     aria-required={required}
-                    className={`w-full flex items-center justify-between rounded-xl border bg-gray-50/50 px-4 py-3 text-left transition-all outline-none hover:bg-gray-100/50 min-h-[50px] ${error
-                            ? 'border-red-500 ring-4 ring-red-500/10'
-                            : isOpen
-                                ? 'border-[#ec5b13] ring-4 ring-[#ec5b13]/10'
-                                : 'border-gray-200'
+                    className={`w-full flex items-center justify-between rounded-xl border bg-gray-50/50 px-4 py-2 text-left transition-all outline-none hover:bg-gray-100/50 min-h-[50px] ${error
+                        ? 'border-red-500 ring-4 ring-red-500/10'
+                        : isOpen
+                            ? 'border-blue-600 ring-4 ring-blue-600/10'
+                            : 'border-gray-200'
                         }`}
                 >
                     <div className="flex items-center overflow-hidden">
                         {renderSelection()}
                     </div>
-                    <ChevronDown className={`w-4 h-4 text-gray-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#ec5b13]' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 text-gray-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-blue-600' : ''}`} />
                 </button>
 
                 {error && <p className="text-xs text-red-500 mt-1.5 ml-1">{error}</p>}
 
-                {isOpen && (
-                    <div className="absolute z-50 mt-2 w-full max-h-72 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl ring-1 ring-black/5 animate-in fade-in zoom-in duration-100 flex flex-col">
+                <FadeIn 
+                    show={isOpen}
+                    duration={200}
+                    slideUp={false}
+                    className="absolute z-50 mt-2 w-full max-h-72 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl ring-1 ring-black/5 flex flex-col slide-in-from-top-2"
+                >
                         <div className="p-2 border-bottom border-gray-50 bg-gray-50/30">
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -346,7 +352,7 @@ function Select<T = string | number>(props: SelectProps<T>) {
                                         setSearchQuery(e.target.value);
                                         setFocusedIndex(0);
                                     }}
-                                    className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#ec5b13] focus:ring-2 focus:ring-[#ec5b13]/10 transition-all"
+                                    className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all"
                                     aria-label="Search options"
                                 />
                             </div>
@@ -367,8 +373,9 @@ function Select<T = string | number>(props: SelectProps<T>) {
                                         role="option"
                                         aria-selected={isSelected(option.value)}
                                         onClick={() => handleSelect(option.value)}
-                                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors outline-none ${isSelected(option.value)
-                                            ? 'bg-[#ec5b13]/5 text-[#ec5b13]'
+                                        style={{ animationDelay: `${index * 30}ms` }}
+                                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors outline-none animate-in slide-in-from-top-1 fill-mode-both ${isSelected(option.value)
+                                            ? 'bg-blue-600/5 text-blue-600'
                                             : index === focusedIndex
                                                 ? 'bg-gray-100 text-gray-900'
                                                 : 'text-gray-700 hover:bg-gray-50'
@@ -390,7 +397,7 @@ function Select<T = string | number>(props: SelectProps<T>) {
                                             </div>
                                         </div>
                                         {isSelected(option.value) && (
-                                            <div className="w-4 h-4 rounded-full bg-[#ec5b13] flex items-center justify-center">
+                                            <div className="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center">
                                                 <Check className="w-2.5 h-2.5 text-white stroke-[3px]" />
                                             </div>
                                         )}
@@ -398,8 +405,7 @@ function Select<T = string | number>(props: SelectProps<T>) {
                                 ))
                             )}
                         </div>
-                    </div>
-                )}
+                    </FadeIn>
             </div>
         </div>
     );

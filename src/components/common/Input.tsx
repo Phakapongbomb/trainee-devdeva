@@ -41,7 +41,7 @@ const Input: React.FC<InputProps> = ({
         <div className="space-y-1.5 w-full">
             {label && (
                 <label className="block text-sm font-semibold text-gray-700">
-                    {label} {required && <span className="text-[#ec5b13]">*</span>}
+                    {label} {required && <span className="text-blue-600">*</span>}
                 </label>
             )}
             <div className="relative">
@@ -49,7 +49,7 @@ const Input: React.FC<InputProps> = ({
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
                 )}
                 <input
-                    className={`w-full rounded-xl border border-gray-200 bg-gray-50/50 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:border-[#ec5b13] focus:ring-4 focus:ring-[#ec5b13]/10 focus:outline-none transition-all outline-none ${showSearchIcon ? 'pl-10' : 'px-4'
+                    className={`w-full rounded-xl border border-gray-200 bg-gray-50/50 pr-4 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 focus:outline-none transition-all outline-none min-h-[50px] ${showSearchIcon ? 'pl-10' : 'px-4'
                         } ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10' : ''
                         } ${className}`}
                     {...props}

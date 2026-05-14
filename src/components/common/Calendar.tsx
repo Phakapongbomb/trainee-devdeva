@@ -40,7 +40,7 @@ const CustomDateInput = forwardRef<HTMLButtonElement, CustomInputProps>(
     ({ value, onClick, placeholder, isOpen }, ref) => (
         <button
             type="button"
-            className={`w-full flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-left transition-all outline-none hover:bg-gray-100/50 min-h-[50px] ${isOpen ? 'border-[#ec5b13] ring-4 ring-[#ec5b13]/10' : ''
+            className={`w-full flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2 text-left transition-all outline-none hover:bg-gray-100/50 min-h-[50px] ${isOpen ? 'border-blue-600 ring-4 ring-blue-600/10' : ''
                 }`}
             onClick={onClick}
             ref={ref}
@@ -52,7 +52,7 @@ const CustomDateInput = forwardRef<HTMLButtonElement, CustomInputProps>(
                 {value || placeholder}
             </span>
             <div className="pl-3 border-l border-gray-100 ml-auto">
-                <CalendarIcon className={`w-5 h-5 text-gray-400 transition-colors ${isOpen ? 'text-[#ec5b13]' : ''}`} />
+                <CalendarIcon className={`w-5 h-5 text-gray-400 transition-colors ${isOpen ? 'text-blue-600' : ''}`} />
             </div>
         </button>
     )

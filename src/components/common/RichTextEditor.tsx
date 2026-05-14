@@ -14,7 +14,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
     }
 
     const buttonClass = (isActive: boolean) =>
-        `p-1.5 rounded-lg transition-all ${isActive ? 'bg-[#ec5b13]/10 text-[#ec5b13]' : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'}`;
+        `p-1.5 rounded-lg transition-all ${isActive ? 'bg-blue-600/10 text-blue-600' : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'}`;
 
     return (
         <div className="flex items-center gap-1 p-2 bg-white border-b border-gray-100">
@@ -66,7 +66,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, plac
     });
 
     return (
-        <div className="rounded-xl border border-gray-200 bg-gray-50/50 overflow-hidden focus-within:border-[#ec5b13] focus-within:ring-4 focus-within:ring-[#ec5b13]/10 transition-all">
+        <div className="rounded-xl border border-gray-200 bg-gray-50/50 overflow-hidden focus-within:border-blue-600 focus-within:ring-4 focus-within:ring-blue-600/10 transition-all">
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
             {editor && editor.isEmpty && placeholder && (

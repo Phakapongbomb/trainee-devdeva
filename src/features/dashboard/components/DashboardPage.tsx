@@ -6,8 +6,10 @@ import {
     Header,
     Filters,
     KanbanColumn,
-    Pagination
+    Pagination,
+    TableTaskLayout
 } from '../index';
+import { FadeIn } from '../../../components/common';
 
 // --- Data & Types ---
 import { useSelector, useDispatch } from 'react-redux';
@@ -29,6 +31,8 @@ const Dashboard = () => {
     const filteredTasks = useSelector(selectFilteredTasks);
     const { searchQuery, priorityFilter, statusFilter, currentPage } = useSelector(selectFilterState);
 
+    const [view, setView] = useState<'kanban' | 'table'>('kanban');
+
     const [modal, setModal] = useState<{
         type: 'add' | 'detail' | 'edit' | null;
         task: Task | null;
@@ -37,13 +41,15 @@ const Dashboard = () => {
 
     const itemsPerPage = 10;
 
-    const totalPages = Math.max(
-        ...COLUMNS.map(col => {
-            const colTasksCount = filteredTasks.filter(t => t.status === col.status).length;
-            return Math.ceil(colTasksCount / itemsPerPage);
-        }),
-        1
-    );
+    const totalPages = view === 'kanban'
+        ? Math.max(
+            ...COLUMNS.map(col => {
+                const colTasksCount = filteredTasks.filter(t => t.status === col.status).length;
+                return Math.ceil(colTasksCount / itemsPerPage);
+            }),
+            1
+        )
+        : Math.ceil(filteredTasks.length / itemsPerPage);
 
     const handleTaskClick = (task: Task) => {
         setModal({ type: 'detail', task });
@@ -63,15 +69,24 @@ const Dashboard = () => {
         dispatch(setCurrentPage(page));
     };
 
+    const handleViewChange = (newView: 'kanban' | 'table') => {
+        setView(newView);
+        dispatch(setCurrentPage(1));
+    };
+
     return (
         <div className="h-full bg-[#f8fafc] font-sans text-slate-800 antialiased flex flex-col">
             <TopNav
                 searchQuery={searchQuery}
                 setSearchQuery={(val) => dispatch(setSearchQuery(val))}
             />
-            <div className="flex-1 overflow-hidden flex flex-col">
+            <FadeIn className="flex-1 overflow-hidden flex flex-col">
                 <main className="container mx-auto flex-1 overflow-hidden p-4 sm:p-6 flex flex-col gap-6">
-                    <Header onNewTask={() => handleAddTaskClick('To Do')} />
+                    <Header
+                        onNewTask={() => handleAddTaskClick('To Do')}
+                        view={view}
+                        setView={handleViewChange}
+                    />
 
                     <Filters
                         searchQuery={searchQuery}
@@ -82,25 +97,32 @@ const Dashboard = () => {
                         setStatusFilter={(val) => dispatch(setStatusFilter(val))}
                     />
 
-                    <div className="flex-1 flex gap-6 overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory hide-scrollbar">
-                        {COLUMNS.map(column => {
-                            const columnTasks = filteredTasks.filter(t => t.status === column.status);
-                            const paginatedColumnTasks = columnTasks.slice(
-                                (currentPage - 1) * itemsPerPage,
-                                currentPage * itemsPerPage
-                            );
+                    {view === 'kanban' ? (
+                        <div className="flex-1 flex gap-6 overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory hide-scrollbar">
+                            {COLUMNS.map(column => {
+                                const columnTasks = filteredTasks.filter(t => t.status === column.status);
+                                const paginatedColumnTasks = columnTasks.slice(
+                                    (currentPage - 1) * itemsPerPage,
+                                    currentPage * itemsPerPage
+                                );
 
-                            return (
-                                <KanbanColumn
-                                    key={column.id}
-                                    column={column}
-                                    tasks={paginatedColumnTasks}
-                                    onTaskClick={handleTaskClick}
-                                    onAddTask={handleAddTaskClick}
-                                />
-                            );
-                        })}
-                    </div>
+                                return (
+                                    <KanbanColumn
+                                        key={column.id}
+                                        column={column}
+                                        tasks={paginatedColumnTasks}
+                                        onTaskClick={handleTaskClick}
+                                        onAddTask={handleAddTaskClick}
+                                    />
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <TableTaskLayout
+                            tasks={filteredTasks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)}
+                            onTaskClick={handleTaskClick}
+                        />
+                    )}
 
                     <Pagination
                         currentPage={currentPage}
@@ -109,28 +131,29 @@ const Dashboard = () => {
                     />
                 </main>
 
-                {/* Modals */}
-                <ModalAddTask
-                    key={modal.type === 'edit' ? `edit-${modal.task?.id}` : (modal.type === 'add' ? `add-${modal.status}` : 'closed')}
-                    isOpen={modal.type === 'add' || modal.type === 'edit'}
-                    onClose={closeModal}
-                    onAddTask={(task) => {
-                        if (modal.type === 'edit') {
-                            dispatch(updateTask(task));
-                        } else {
-                            dispatch(addTask(task));
-                        }
-                    }}
-                    task={modal.type === 'edit' ? modal.task : null}
-                    initialStatus={modal.status}
-                />
-                <ModalDetailTask
-                    isOpen={modal.type === 'detail'}
-                    task={modal.task}
-                    onClose={closeModal}
-                    onEdit={handleEditTaskClick}
-                />
-            </div>
+            </FadeIn>
+
+            {/* Modals */}
+            <ModalAddTask
+                key={modal.type === 'edit' ? `edit-${modal.task?.id}` : (modal.type === 'add' ? `add-${modal.status}` : 'closed')}
+                isOpen={modal.type === 'add' || modal.type === 'edit'}
+                onClose={closeModal}
+                onAddTask={(task) => {
+                    if (modal.type === 'edit') {
+                        dispatch(updateTask(task));
+                    } else {
+                        dispatch(addTask(task));
+                    }
+                }}
+                task={modal.type === 'edit' ? modal.task : null}
+                initialStatus={modal.status}
+            />
+            <ModalDetailTask
+                isOpen={modal.type === 'detail'}
+                task={modal.task}
+                onClose={closeModal}
+                onEdit={handleEditTaskClick}
+            />
         </div>
     );
 };

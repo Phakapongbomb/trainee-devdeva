@@ -122,7 +122,7 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
                 {/* Header */}
                 <header className="flex items-center justify-between px-6 py-5 border-b border-gray-100 sticky top-0 bg-white z-10">
                     <div className="flex items-center gap-3">
-                        <div className="w-2 h-6 bg-[#ec5b13] rounded-full" />
+                        <div className="w-2 h-6 bg-blue-600 rounded-full" />
                         <h2 className="text-xl font-bold text-gray-900">
                             {task ? 'Edit Task' : 'Create New Task'}
                         </h2>
@@ -224,7 +224,7 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
                     </button>
                     <button
                         type="submit"
-                        className="px-8 py-2.5 bg-[#ec5b13] hover:bg-[#d44d0b] text-white rounded-xl text-sm font-bold shadow-lg shadow-orange-200 transition-all active:scale-95"
+                        className="px-8 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 transition-all active:scale-95"
                     >
                         {task ? 'Update Task' : 'Create Task'}
                     </button>
