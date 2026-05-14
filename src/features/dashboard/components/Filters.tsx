@@ -1,6 +1,9 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import { Input, Select, type SelectOption } from '../../../components/common';
+import { useSelector } from 'react-redux';
+import { selectColumns, selectPriorities } from '../../../store/selectors';
+import { useMemo } from 'react';
 
 import { FILTER_ALL_PRIORITIES, FILTER_ALL_STATUSES } from '../../../constants/filters';
 
@@ -13,19 +16,7 @@ interface FiltersProps {
     setStatusFilter: (val: string) => void;
 }
 
-const priorityOptions: SelectOption<string>[] = [
-    { id: 'all', label: FILTER_ALL_PRIORITIES, value: FILTER_ALL_PRIORITIES },
-    { id: 'high', label: 'High', value: 'High' },
-    { id: 'medium', label: 'Medium', value: 'Medium' },
-    { id: 'low', label: 'Low', value: 'Low' },
-];
 
-const statusOptions: SelectOption<string>[] = [
-    { id: 'all', label: FILTER_ALL_STATUSES, value: FILTER_ALL_STATUSES },
-    { id: 'todo', label: 'To Do', value: 'To Do' },
-    { id: 'inprogress', label: 'In Progress', value: 'In Progress' },
-    { id: 'done', label: 'Done', value: 'Done' },
-];
 
 const Filters: React.FC<FiltersProps> = ({
     searchQuery,
@@ -35,6 +26,23 @@ const Filters: React.FC<FiltersProps> = ({
     statusFilter,
     setStatusFilter
 }) => {
+    const columns = useSelector(selectColumns);
+    const priorities = useSelector(selectPriorities);
+
+    const dynamicPriorityOptions = useMemo(() => [
+        { id: 'all', label: FILTER_ALL_PRIORITIES, value: FILTER_ALL_PRIORITIES },
+        ...priorities
+    ], [priorities]);
+
+    const dynamicStatusOptions = useMemo(() => [
+        { id: 'all', label: FILTER_ALL_STATUSES, value: FILTER_ALL_STATUSES },
+        ...columns.map(col => ({
+            id: col.id,
+            label: col.title,
+            value: col.status
+        }))
+    ], [columns]);
+
     const handleClearAll = () => {
         setSearchQuery('');
         setPriorityFilter(FILTER_ALL_PRIORITIES);
@@ -57,7 +65,7 @@ const Filters: React.FC<FiltersProps> = ({
             <div className="flex items-center gap-3 pb-1 lg:pb-0 hide-scrollbar">
                 <div className="min-w-[160px]">
                     <Select<string>
-                        options={priorityOptions}
+                        options={dynamicPriorityOptions}
                         value={priorityFilter}
                         onChange={setPriorityFilter}
                         placeholder="Priority"
@@ -65,7 +73,7 @@ const Filters: React.FC<FiltersProps> = ({
                 </div>
                 <div className="min-w-[160px]">
                     <Select<string>
-                        options={statusOptions}
+                        options={dynamicStatusOptions}
                         value={statusFilter}
                         onChange={setStatusFilter}
                         placeholder="Status"

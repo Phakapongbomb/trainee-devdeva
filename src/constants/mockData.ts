@@ -1,4 +1,4 @@
-import type { Task, Column } from '../types/task';
+import type { Task, Column, Priority } from '../types/task';
 import type { User } from '../types/user';
 
 export const MOCK_USERS: User[] = [
@@ -47,9 +47,15 @@ export const MOCK_PROJECTS = [
     'Internal Tooling'
 ];
 
+export const PRIORITIES: Priority[] = [
+    { id: 'high', label: 'High', value: 'High' },
+    { id: 'medium', label: 'Medium', value: 'Medium' },
+    { id: 'low', label: 'Low', value: 'Low' },
+];
+
 export const INITIAL_TASKS: Task[] = Array.from({ length: 30 }, (_, i) => {
     const id = (i + 1).toString();
-    const priorities: Task['priority'][] = ['High', 'Medium', 'Low'];
+    const priorityValues = PRIORITIES.map(p => p.value);
     const types = ['Feature', 'Bug', 'Design', 'Refactor'];
 
     let status: Task['status'] = 'To Do';
@@ -71,7 +77,7 @@ export const INITIAL_TASKS: Task[] = Array.from({ length: 30 }, (_, i) => {
         ][i % 10]}`,
         project: MOCK_PROJECTS[i % MOCK_PROJECTS.length],
         type: types[i % types.length],
-        priority: priorities[i % priorities.length],
+        priority: priorityValues[i % priorityValues.length],
         date: `${20 + (i % 10)}/10/2026`,
         status,
         progress: status === 'Done' ? 100 : (status === 'In Progress' ? 45 : 0),

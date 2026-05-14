@@ -1,19 +1,21 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Column } from '../types/task';
+import type { Column, Priority } from '../types/task';
 import type { User } from '../types/user';
-import { getInitialUsers, getInitialProjects, getInitialColumns } from './hydration';
+import { getInitialUsers, getInitialProjects, getInitialColumns, getInitialPriorities } from './hydration';
 import { resetApp } from './actions';
 
 interface MetadataState {
     users: User[];
     projects: string[];
     columns: Column[];
+    priorities: Priority[];
 }
 
 const initialState: MetadataState = {
     users: getInitialUsers(),
     projects: getInitialProjects(),
     columns: getInitialColumns(),
+    priorities: getInitialPriorities(),
 };
 
 const metadataSlice = createSlice({
@@ -29,6 +31,9 @@ const metadataSlice = createSlice({
         setColumns: (state, action: PayloadAction<Column[]>) => {
             state.columns = action.payload;
         },
+        setPriorities: (state, action: PayloadAction<Priority[]>) => {
+            state.priorities = action.payload;
+        },
         updateColumn: (state, action: PayloadAction<Column>) => {
             const index = state.columns.findIndex(c => c.id === action.payload.id);
             if (index !== -1) {
@@ -41,5 +46,5 @@ const metadataSlice = createSlice({
     },
 });
 
-export const { setUsers, setProjects, setColumns, updateColumn } = metadataSlice.actions;
+export const { setUsers, setProjects, setColumns, setPriorities, updateColumn } = metadataSlice.actions;
 export default metadataSlice.reducer;

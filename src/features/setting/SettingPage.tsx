@@ -5,56 +5,39 @@ import {
     Folder as FolderIcon,
     BarChart3 as AnalyticsIcon,
     AlertTriangle as PriorityIcon,
-    Clock as ScheduleIcon,
-    Cloud as CloudIcon,
-    ArrowRight as ArrowIcon,
-    GripVertical as DragIcon,
     Settings as SettingsGear,
     Globe as GlobeIcon,
     Smartphone as MobileIcon,
-    Search as SearchIcon,
-    Bell as BellIcon,
-    HelpCircle as HelpIcon
+    RotateCcw
 } from 'lucide-react';
-import { TopNav } from '../../components/common';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectProjects, selectColumns, selectUsers } from '../../store/selectors';
-import { setProjects, setColumns, setUsers } from '../../store/metadataSlice';
-import { resetApp } from '../../store/actions';
-import { FadeIn, ConfirmModal } from '../../components/common';
-import { RotateCcw } from 'lucide-react';
+import { TopNav, FadeIn, ConfirmModal } from '../../components/common';
+import { useSettings } from './hooks/useSettings';
+import { ProjectModal } from './components/ProjectModal';
+import { StatusModal } from './components/StatusModal';
+import { PriorityModal } from './components/PriorityModal';
 
 const SettingPage: React.FC = () => {
-    const dispatch = useDispatch();
-    const reduxProjects = useSelector(selectProjects);
-    const reduxColumns = useSelector(selectColumns);
-    const reduxUsers = useSelector(selectUsers);
+    const {
+        reduxUsers,
+        projects,
+        setLocalProjects,
+        columns,
+        setLocalColumns,
+        priorities,
+        setLocalPriorities,
+        searchQuery,
+        setSearchQuery,
+        modal,
+        setModal,
+        isChanged,
+        isNotDefault,
+        handleSave,
+        confirmReset
+    } = useSettings();
 
-    // Local state for editing before saving
-    const [projects, setLocalProjects] = useState<string[]>(reduxProjects);
-    const [columns, setLocalColumns] = useState(reduxColumns);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [modal, setModal] = useState<{
-        type: 'save' | 'reset' | null;
-    }>({ type: null });
-
-
-    const handleSave = () => {
-        dispatch(setProjects(projects));
-        dispatch(setColumns(columns));
-        setModal({ type: 'save' });
-    };
-
-    const handleResetAll = () => {
-        setModal({ type: 'reset' });
-    };
-
-    const confirmReset = () => {
-        dispatch(resetApp());
-        setLocalProjects(reduxProjects);
-        setLocalColumns(reduxColumns);
-        setModal({ type: null });
-    };
+    const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [isPriorityModalOpen, setIsPriorityModalOpen] = useState(false);
 
     return (
         <div className="flex flex-col h-full bg-[#faf8ff] overflow-hidden">
@@ -65,34 +48,15 @@ const SettingPage: React.FC = () => {
             />
             <div className="flex-1 overflow-y-auto">
                 <FadeIn className="p-4 sm:p-6 lg:p-8 container mx-auto w-full">
-                    {/* Page Title & Save Button */}
-                    <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-                        <div>
-                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Settings</h1>
-                            <p className="text-sm sm:text-base text-gray-500 mt-1">Configure your workspace preferences and project parameters.</p>
-                        </div>
-                        <div className="flex flex-row items-center gap-3 w-full sm:w-auto">
-                            <button
-                                onClick={handleResetAll}
-                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl font-bold hover:bg-red-50 transition-all active:scale-95 text-sm sm:text-base"
-                            >
-                                <RotateCcw className="w-4 h-4" />
-                                <span className="whitespace-nowrap">Reset Defaults</span>
-                            </button>
-                            <button
-                                onClick={handleSave}
-                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-200 text-sm sm:text-base"
-                            >
-                                <SaveIcon className="w-4 h-4" />
-                                <span className="whitespace-nowrap">Save Changes</span>
-                            </button>
-                        </div>
+                    {/* Page Title */}
+                    <div className="mb-8">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Settings</h1>
+                        <p className="text-sm sm:text-base text-gray-500 mt-1">Configure your workspace preferences and project parameters.</p>
                     </div>
 
                     <div className="grid grid-cols-12 gap-8">
                         {/* Main Settings Section */}
                         <div className="col-span-12 xl:col-span-8 space-y-8">
-
                             {/* Active Projects */}
                             <section className="space-y-4">
                                 <div className="flex items-center justify-between">
@@ -100,9 +64,11 @@ const SettingPage: React.FC = () => {
                                         <FolderIcon className="text-blue-600 w-5 h-5" />
                                         <h2 className="text-xl font-bold text-gray-900">Active Projects</h2>
                                     </div>
-                                    <button className="flex items-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap">
-                                        <PlusIcon className="w-4 h-4" />
-                                        Add Project
+                                    <button
+                                        onClick={() => setIsProjectModalOpen(true)}
+                                        className="flex items-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap"
+                                    >
+                                        Manage Projects
                                     </button>
                                 </div>
 
@@ -119,7 +85,6 @@ const SettingPage: React.FC = () => {
                                             </div>
                                             <div className="mb-4">
                                                 <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{project}</h3>
-                                                <p className="text-xs text-gray-500 mt-1">Managed by Alex Chen</p>
                                             </div>
                                             <div className="space-y-2">
                                                 <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
@@ -145,25 +110,27 @@ const SettingPage: React.FC = () => {
                                         <AnalyticsIcon className="text-blue-600 w-5 h-5" />
                                         <h2 className="text-lg font-bold text-gray-900">Task Statuses</h2>
                                     </div>
-                                    <button className="flex items-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap">
-                                        <PlusIcon className="w-4 h-4" />
-                                        Add Status
+                                    <button
+                                        onClick={() => setIsStatusModalOpen(true)}
+                                        className="flex items-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap"
+                                    >
+                                        Manage Statuses
                                     </button>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                                     {columns.map((col) => (
                                         <div key={col.id} className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100 group">
                                             <div className="flex items-center gap-3">
-                                                {/* <DragIcon className="w-4 h-4 text-gray-300 cursor-grab" /> */}
                                                 <span className="font-bold text-gray-700">{col.title}</span>
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <div className={`w-3 h-3 rounded-full ${col.theme === 'blue' ? 'bg-blue-500' :
-                                                    col.theme === 'green' ? 'bg-green-500' : 'bg-slate-400'
+                                                    col.theme === 'green' ? 'bg-green-500' :
+                                                        col.theme === 'amber' ? 'bg-amber-500' :
+                                                            col.theme === 'purple' ? 'bg-purple-500' :
+                                                                col.theme === 'red' ? 'bg-red-500' :
+                                                                    col.theme === 'pink' ? 'bg-pink-500' : 'bg-slate-400'
                                                     }`} />
-                                                <button className="cursor-pointer p-1.5 hover:bg-white rounded-lg text-gray-400 transition-all">
-                                                    <SettingsGear className="w-4 h-4" />
-                                                </button>
                                             </div>
                                         </div>
                                     ))}
@@ -173,7 +140,6 @@ const SettingPage: React.FC = () => {
 
                         {/* Sidebar Settings Section */}
                         <div className="col-span-12 xl:col-span-4 space-y-8">
-
                             {/* Priorities Management */}
                             <section className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
                                 <div className="flex items-center justify-between gap-2 mb-6">
@@ -181,29 +147,28 @@ const SettingPage: React.FC = () => {
                                         <PriorityIcon className="text-blue-600 w-5 h-5" />
                                         <h2 className="text-lg font-bold text-gray-900">Priorities</h2>
                                     </div>
-                                    <button className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap">
-                                        <PlusIcon className="w-4 h-4" />
-                                        Add Priority
+                                    <button
+                                        onClick={() => setIsPriorityModalOpen(true)}
+                                        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition-all text-sm whitespace-nowrap"
+                                    >
+                                        Manage Priorities
                                     </button>
                                 </div>
                                 <div className="space-y-5">
-                                    {[
-                                        { label: 'Critical / Urgent', color: 'bg-red-500', value: 'High', border: 'focus:border-red-500' },
-                                        { label: 'Standard Routine', color: 'bg-blue-500', value: 'Medium', border: 'focus:border-blue-500' },
-                                        { label: 'Backlog / Low', color: 'bg-slate-400', value: 'Low', border: 'focus:border-slate-500' }
-                                    ].map((p, i) => (
-                                        <div key={i} className="space-y-1.5">
+                                    {priorities.map((p, i) => (
+                                        <div key={i} className="space-y-1.5 animate-in fade-in slide-in-from-left duration-300" style={{ animationDelay: `${i * 100}ms` }}>
                                             <div className="flex justify-between items-center px-1">
-                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{p.label}</label>
+                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Priority Level</label>
                                                 <span className="text-[10px] font-bold text-blue-600">Level {i + 1}</span>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-10 h-10 rounded-xl ${p.color} shadow-sm flex-shrink-0`} />
-                                                <input
-                                                    className={`flex-grow bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/10 ${p.border} transition-all`}
-                                                    type="text"
-                                                    defaultValue={p.value}
-                                                />
+                                                <div className={`w-10 h-10 rounded-xl shadow-sm flex-shrink-0 ${p.value === 'High' ? 'bg-red-500' :
+                                                    p.value === 'Medium' ? 'bg-blue-500' :
+                                                        p.value === 'Low' ? 'bg-slate-400' : 'bg-amber-500'
+                                                    }`} />
+                                                <div className="flex-grow bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700">
+                                                    {p.label}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -231,7 +196,7 @@ const SettingPage: React.FC = () => {
                                                 <img src={user.avatar} alt={user.fullName} className="w-10 h-10 rounded-full object-cover ring-2 ring-transparent group-hover:ring-blue-100 transition-all" />
                                                 <div>
                                                     <p className="text-sm font-bold text-gray-900">{user.fullName}</p>
-                                                    <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter">{user.role || 'Member'}</p>
+                                                    <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter">{'Member'}</p>
                                                 </div>
                                             </div>
                                             <button className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-gray-50 rounded-lg text-gray-400 transition-all">
@@ -246,7 +211,39 @@ const SettingPage: React.FC = () => {
                 </FadeIn>
             </div>
 
-            {/* Modals */}
+            {/* Floating Action Widget */}
+            {(isChanged || isNotDefault) && (
+                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-2xl animate-in fade-in slide-in-from-bottom-8 duration-500">
+                    <div className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-3xl p-4 flex items-center justify-between gap-4 ring-1 ring-black/5">
+                        <div className="hidden sm:block px-2">
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Unsaved Changes</p>
+                            <p className="text-[10px] text-gray-400">Review your settings before applying</p>
+                        </div>
+                        <div className="flex items-center gap-3 w-full sm:w-auto">
+                            {isNotDefault && (
+                                <button
+                                    onClick={() => setModal({ type: 'reset' })}
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 bg-white border border-red-100 text-red-500 rounded-2xl font-bold hover:bg-red-50 transition-all active:scale-95 text-sm ring-1 ring-red-50"
+                                >
+                                    <RotateCcw className="w-4 h-4" />
+                                    <span className="whitespace-nowrap">Reset</span>
+                                </button>
+                            )}
+                            {isChanged && (
+                                <button
+                                    onClick={handleSave}
+                                    className="flex-grow sm:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all active:scale-95 shadow-xl shadow-blue-500/20 text-sm"
+                                >
+                                    <SaveIcon className="w-4 h-4" />
+                                    <span className="whitespace-nowrap">Save Changes</span>
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Common Modals */}
             <ConfirmModal
                 isOpen={modal.type === 'save'}
                 onClose={() => setModal({ type: null })}
@@ -266,6 +263,34 @@ const SettingPage: React.FC = () => {
                 confirmText="Reset Everything"
                 type="danger"
             />
+
+            {/* Domain-Specific Modals */}
+            {isProjectModalOpen && (
+                <ProjectModal
+                    isOpen={isProjectModalOpen}
+                    onClose={() => setIsProjectModalOpen(false)}
+                    projects={projects}
+                    onConfirm={setLocalProjects}
+                />
+            )}
+
+            {isStatusModalOpen && (
+                <StatusModal
+                    isOpen={isStatusModalOpen}
+                    onClose={() => setIsStatusModalOpen(false)}
+                    columns={columns}
+                    onConfirm={setLocalColumns}
+                />
+            )}
+
+            {isPriorityModalOpen && (
+                <PriorityModal
+                    isOpen={isPriorityModalOpen}
+                    onClose={() => setIsPriorityModalOpen(false)}
+                    priorities={priorities}
+                    onConfirm={setLocalPriorities}
+                />
+            )}
         </div>
     );
 };

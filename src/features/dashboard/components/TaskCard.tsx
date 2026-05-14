@@ -1,6 +1,9 @@
+import React from 'react';
 import { Calendar, MoreHorizontal } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import type { Task } from '../../../types/task';
 import { PRIORITY_THEME } from '../../../constants/theme';
+import { selectPriorities } from '../../../store/selectors';
 
 interface TaskCardProps {
     task: Task;
@@ -8,7 +11,13 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
-    const config = PRIORITY_THEME[task.priority];
+    const priorities = useSelector(selectPriorities);
+
+    // Resolve theme by finding the priority metadata first
+    const priorityMeta = priorities.find(p => p.value === task.priority);
+    const themeKey = (priorityMeta?.id ? (priorityMeta.id.charAt(0).toUpperCase() + priorityMeta.id.slice(1)) : 'Medium') as keyof typeof PRIORITY_THEME;
+
+    const config = PRIORITY_THEME[themeKey] || PRIORITY_THEME.Medium;
     const isDone = task.status === 'Done';
     const PriorityIcon = config.icon;
 
@@ -33,9 +42,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
             </div>
 
             <div className="flex flex-wrap gap-2">
-                <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500">
+                {/* <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500">
                     {task.type}
-                </span>
+                </span> */}
                 <span className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${config.bg} ${config.text}`}>
                     <PriorityIcon className="w-3 h-3" /> {task.priority}
                 </span>

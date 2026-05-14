@@ -9,7 +9,8 @@ import {
 } from 'lucide-react';
 import type { Task } from '../../../types/task';
 import { PRIORITY_THEME } from '../../../constants/theme';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectPriorities } from '../../../store/selectors';
 import { updateTask, deleteTask } from '../../../store/taskSlice';
 import { ConfirmModal } from '../../../components/common';
 
@@ -22,11 +23,15 @@ interface ModalDetailTaskProps {
 
 const ModalDetailTask: React.FC<ModalDetailTaskProps> = ({ isOpen, task, onClose, onEdit }) => {
     const dispatch = useDispatch();
+    const priorities = useSelector(selectPriorities);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     if (!isOpen || !task) return null;
 
-    const config = PRIORITY_THEME[task.priority];
+    // Resolve theme by finding the priority metadata first
+    const priorityMeta = priorities.find(p => p.value === task.priority);
+    const themeKey = (priorityMeta?.id ? (priorityMeta.id.charAt(0).toUpperCase() + priorityMeta.id.slice(1)) : 'Medium') as keyof typeof PRIORITY_THEME;
+    const config = PRIORITY_THEME[themeKey] || PRIORITY_THEME.Medium;
 
     const handleDeleteClick = () => {
         setShowDeleteConfirm(true);

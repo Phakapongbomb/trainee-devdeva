@@ -5,9 +5,9 @@ export interface Task {
     title: string;
     project: string;
     type: string;
-    priority: 'High' | 'Medium' | 'Low';
+    priority: string;
     date: string;
-    status: 'To Do' | 'In Progress' | 'Done';
+    status: string;
     progress: number;
     avatars: string[];
     description?: string;
@@ -15,8 +15,13 @@ export interface Task {
 }
 
 export interface Column {
-    id: 'todo' | 'in-progress' | 'done';
+    id: string;
     title: string;
-    status: Task['status'];
-    theme: 'slate' | 'blue' | 'green';
+    status: string;
+    theme: 'slate' | 'blue' | 'green' | 'amber' | 'purple' | 'pink' | 'red';
+}
+export interface Priority {
+    id: string;
+    label: string;
+    value: string;
 }

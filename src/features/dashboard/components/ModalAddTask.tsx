@@ -3,10 +3,9 @@ import { X } from 'lucide-react';
 import { Calendar, RichTextEditor, Input, Select, type SelectOption } from '../../../components/common';
 import type { Task } from '../../../types/task';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUsers, selectProjects } from '../../../store/selectors';
+import { selectUsers, selectProjects, selectPriorities, selectColumns } from '../../../store/selectors';
 import { addTask, updateTask } from '../../../store/taskSlice';
 import { parseSafeDate, formatDateDisplay } from '../../../utils/dateUtils';
-import { PRIORITY_THEME, STATUS_THEME } from '../../../constants/theme';
 
 interface ModalAddTaskProps {
     isOpen: boolean;
@@ -26,6 +25,8 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
     const dispatch = useDispatch();
     const users = useSelector(selectUsers);
     const projects = useSelector(selectProjects);
+    const priorities = useSelector(selectPriorities);
+    const columns = useSelector(selectColumns);
 
     const [formData, setFormData] = useState<TaskFormData>({
         title: task?.title || '',
@@ -94,16 +95,16 @@ const ModalAddTask: React.FC<ModalAddTaskProps> = ({ isOpen, onClose, task, init
         image: u.avatar
     }));
 
-    const priorityOptions: SelectOption<Task['priority']>[] = Object.keys(PRIORITY_THEME).map(key => ({
-        id: key,
-        label: key,
-        value: key as Task['priority']
+    const priorityOptions: SelectOption<string>[] = priorities.map(p => ({
+        id: p.id,
+        label: p.label,
+        value: p.value
     }));
 
-    const statusOptions: SelectOption<Task['status']>[] = Object.keys(STATUS_THEME).map(key => ({
-        id: key,
-        label: key,
-        value: key as Task['status']
+    const statusOptions: SelectOption<string>[] = columns.map(col => ({
+        id: col.id,
+        label: col.title,
+        value: col.status
     }));
 
     const typeOptions: SelectOption<Task['type']>[] = [

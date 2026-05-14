@@ -10,16 +10,24 @@ interface KanbanColumnProps {
 }
 
 const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, tasks, onTaskClick, onAddTask }) => {
-    const themes = {
+    const themes: Record<string, string> = {
         slate: "bg-slate-100 text-slate-600 border-slate-200",
         blue: "bg-blue-50 text-blue-700 border-blue-100",
-        green: "bg-green-50 text-green-700 border-green-100"
+        green: "bg-green-50 text-green-700 border-green-100",
+        amber: "bg-amber-50 text-amber-700 border-amber-100",
+        purple: "bg-purple-50 text-purple-700 border-purple-100",
+        red: "bg-red-50 text-red-700 border-red-100",
+        pink: "bg-pink-50 text-pink-700 border-pink-100"
     };
 
-    const dotColors = {
+    const dotColors: Record<string, string> = {
         slate: "bg-slate-400",
         blue: "bg-blue-500",
-        green: "bg-green-500"
+        green: "bg-green-500",
+        amber: "bg-amber-500",
+        purple: "bg-purple-500",
+        red: "bg-red-500",
+        pink: "bg-pink-500"
     };
 
     return (
