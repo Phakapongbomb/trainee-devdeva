@@ -17,6 +17,7 @@ import type { Task } from '../../../types/task';
 import { COLUMNS } from '../../../constants/mockData';
 import { addTask, updateTask } from '../../../store/taskSlice';
 import {
+    setNavSearch,
     setSearchQuery,
     setPriorityFilter,
     setStatusFilter,
@@ -29,7 +30,7 @@ const Dashboard = () => {
 
     // Get tasks and filters from Redux
     const filteredTasks = useSelector(selectFilteredTasks);
-    const { searchQuery, priorityFilter, statusFilter, currentPage } = useSelector(selectFilterState);
+    const { navSearch, searchQuery, priorityFilter, statusFilter, currentPage } = useSelector(selectFilterState);
 
     const [view, setView] = useState<'kanban' | 'table'>('kanban');
 
@@ -77,8 +78,8 @@ const Dashboard = () => {
     return (
         <div className="h-full bg-[#f8fafc] font-sans text-slate-800 antialiased flex flex-col">
             <TopNav
-                searchQuery={searchQuery}
-                setSearchQuery={(val) => dispatch(setSearchQuery(val))}
+                searchQuery={navSearch}
+                setSearchQuery={(val) => dispatch(setNavSearch(val))}
             />
             <FadeIn className="flex-1 overflow-hidden flex flex-col">
                 <main className="container mx-auto flex-1 overflow-hidden p-4 sm:p-6 flex flex-col gap-6">

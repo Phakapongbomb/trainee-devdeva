@@ -16,20 +16,28 @@ const selectFilters = (state: RootState) => state.filters;
 export const selectFilteredTasks = createSelector(
     [selectTasks, selectFilters],
     (tasks, filters) => {
-        const { searchQuery, priorityFilter, statusFilter } = filters;
+        const { navSearch, searchQuery, priorityFilter, statusFilter } = filters;
 
         return tasks.filter(task => {
-            const matchesSearch =
-                task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                task.project.toLowerCase().includes(searchQuery.toLowerCase());
+            // 1. TopNav "Smart Search" Logic (Title OR Priority OR Status)
+            const navLower = navSearch.toLowerCase();
+            const matchesNav = !navSearch || 
+                task.title.toLowerCase().includes(navLower) ||
+                task.priority.toLowerCase().includes(navLower) ||
+                task.status.toLowerCase().includes(navLower);
 
-            const matchesPriority =
-                priorityFilter === 'All Priorities' || task.priority === priorityFilter;
+            // 2. Specific Local Filter Search Logic
+            const queryLower = searchQuery.toLowerCase();
+            const matchesLocalSearch = !searchQuery || 
+                task.title.toLowerCase().includes(queryLower) ||
+                task.project.toLowerCase().includes(queryLower);
 
-            const matchesStatus =
-                statusFilter === 'Status: All' || task.status === statusFilter;
+            // 3. Dropdown Filters Logic
+            const matchesPriority = priorityFilter === 'All Priorities' || task.priority === priorityFilter;
+            const matchesStatus = statusFilter === 'Status: All' || task.status === statusFilter;
 
-            return matchesSearch && matchesPriority && matchesStatus;
+            // Combine all with AND logic
+            return matchesNav && matchesLocalSearch && matchesPriority && matchesStatus;
         });
     }
 );

@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 interface FilterState {
+    navSearch: string;
     searchQuery: string;
     priorityFilter: string;
     statusFilter: string;
@@ -8,6 +9,7 @@ interface FilterState {
 }
 
 const initialState: FilterState = {
+    navSearch: '',
     searchQuery: '',
     priorityFilter: 'All Priorities',
     statusFilter: 'Status: All',
@@ -18,6 +20,9 @@ export const filterSlice = createSlice({
     name: 'filters',
     initialState,
     reducers: {
+        setNavSearch: (state, action: PayloadAction<string>) => {
+            state.navSearch = action.payload;
+        },
         setSearchQuery: (state, action: PayloadAction<string>) => {
             state.searchQuery = action.payload;
             state.currentPage = 1; // Reset to first page on search
@@ -43,6 +48,7 @@ export const filterSlice = createSlice({
 });
 
 export const {
+    setNavSearch,
     setSearchQuery,
     setPriorityFilter,
     setStatusFilter,
